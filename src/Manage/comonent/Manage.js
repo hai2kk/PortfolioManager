@@ -5,6 +5,7 @@ import NavigationStyles from "../../navigation/NavigationStyles";
 class Manage extends Component {
   static navigationOptions = {
     tabBarLabel: "Manage",
+    tabBarVisible: false,
     tabBarIcon: ({ tintColor }) => (
       <Image
         source={require("../../assets/manage.png")}

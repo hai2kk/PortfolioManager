@@ -1,7 +1,9 @@
 import { TabNavigator } from "react-navigation";
 import Portfolio from "../Portfolio/component/Portfolio.js";
-import Manage from "../Manage/comonent/Manage.js";
 import Watchlist from "../WatchList/component/Watchlist.js";
+import Manage from "../Manage/comonent/Manage";
+import { Alert } from "react-native";
+import { NavigationActions } from "react-navigation";
 
 const Navigator = TabNavigator(
   {
@@ -9,7 +11,18 @@ const Navigator = TabNavigator(
       screen: Portfolio
     },
     Manage: {
-      screen: Manage
+      screen: Manage,
+      navigationOptions: ({ navigation, screenProps }) => ({
+        tabBarOnPress: (tabObj, jumpToIndex) => {
+          const navigate = screenProps.navigate;
+          const navigateAction = NavigationActions.navigate({
+            routeName: "ManageLookup",
+            params: {},
+            action: NavigationActions.navigate({ routeName: "ManageLookup" })
+          });
+          navigate.dispatch(navigateAction);
+        }
+      })
     },
     Watchlist: {
       screen: Watchlist
