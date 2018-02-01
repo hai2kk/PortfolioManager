@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Navigator from "./Navigator";
+import TabbedNavigator from "./TabbedNavigator";
 import { View } from "react-native";
 
 class TabbedNavigationComponent extends React.Component {
@@ -7,7 +7,7 @@ class TabbedNavigationComponent extends React.Component {
     const  navigate  = this.props.navigation;
     console.log(navigate);
     return (
-        <Navigator screenProps={{ navigate: navigate }} />
+        <TabbedNavigator screenProps={{ navigate: navigate }} />
     );
   }
 }
