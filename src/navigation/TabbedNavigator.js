@@ -1,11 +1,11 @@
 import { TabNavigator } from "react-navigation";
-import Portfolio from "../Portfolio/component/Portfolio.js";
-import Watchlist from "../WatchList/component/Watchlist.js";
-import Manage from "../Manage/comonent/Manage";
-import { Alert } from "react-native";
 import { NavigationActions } from "react-navigation";
+import Portfolio from "../components/portfolio/Portfolio";
+import Watchlist from "../components/watchList/Watchlist.js";
+import Manage from "../components/manage/Manage";
+import Constants from "../constants/PortfolioConstants";
 
-const Navigator = TabNavigator(
+const TabbedNavigator = TabNavigator(
   {
     Portfolio: {
       screen: Portfolio
@@ -32,12 +32,12 @@ const Navigator = TabNavigator(
     tabBarPosition: "bottom",
     animationEnabled: true,
     tabBarOptions: {
-      activeTintColor: "#70196D",
+      activeTintColor: Constants.FORE_COLOR_CODE,
       labelStyle: {
         fontSize: 12.5
       },
       style: {
-        backgroundColor: "#D3D3D3"
+        backgroundColor: Constants.BACKGROUND_COLOR_CODE
       },
       showIcon: true,
       indicatorStyle: {
@@ -48,4 +48,4 @@ const Navigator = TabNavigator(
   }
 );
 
-export default Navigator;
+export default TabbedNavigator;
