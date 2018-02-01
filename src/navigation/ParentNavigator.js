@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StackNavigator } from "react-navigation";
 import TabbedNavigationComponent from "./TabbedNavigationComponent";
-import ManageLookup from "../Manage/comonent/ManageLookup";
+import ManageLookup from "../components/manage/ManageLookup";
 
 const ParentNavigator = StackNavigator({
   Home: {
@@ -11,12 +11,7 @@ const ParentNavigator = StackNavigator({
     }
   },
   ManageLookup: {
-    screen: ManageLookup/* ,
-    navigationOptions: {
-      header: {
-        visible: false
-      } 
-    }*/
+    screen: ManageLookup
   }
 });
 

@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import NavigationStyles from "../../navigation/NavigationStyles";
+import NavigationStyles from "../../styles/NavigationStyles"
 
-class Watchlist extends Component {
+class Portfolio extends Component {
   static navigationOptions = {
-    tabBarLabel: "Watchlist",
+    tabBarLabel: "Portfolio",
     tabBarIcon: ({ tintColor }) => (
       <Image
-        source={require("../../assets/watchlist.png")}
+        source={require("../../assets/portfolio.png")}
         style={[NavigationStyles.icon, { tintColor: tintColor }]}
       />
     )
   };
+
   render() {
     const styles = StyleSheet.create({
       container: {
@@ -24,10 +25,10 @@ class Watchlist extends Component {
 
     return (
       <View style={styles.container}>
-        <Text> Watchlist page</Text>
+        <Text> Portfolio page</Text>
       </View>
     );
   }
 }
 
-export default Watchlist;
+export default Portfolio;

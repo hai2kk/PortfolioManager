@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import NavigationStyles from "../../navigation/NavigationStyles";
+import NavigationStyles from "../../styles/NavigationStyles"
 
 class Manage extends Component {
   static navigationOptions = {
