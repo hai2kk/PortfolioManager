@@ -14,7 +14,6 @@ const LookupNavigator = TabNavigator(
     }
   },
   {
-    tabBarPosition: "top",
     animationEnabled: true,
     tabBarOptions: {
       activeTintColor: Constants.FORE_COLOR_CODE,
@@ -24,11 +23,11 @@ const LookupNavigator = TabNavigator(
       style: {
         backgroundColor: Constants.BACKGROUND_COLOR_CODE
       },
-      showIcon: false/* ,
+      showIcon: true ,
       indicatorStyle: {
         width: 0,
         height: 0
-      } */
+      } 
     }
   }
 );

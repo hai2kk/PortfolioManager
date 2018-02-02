@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
 import Constants from "../../../constants/PortfolioConstants"
+import NavigationStyles from "../../../styles/NavigationStyles"
 
-class CryptoLookup extends React.Component {
+class CryptoLookup extends Component {
   static navigationOptions = {  
-    title: Constants.CRYPTO_LOOKUP_HEADER_TITLE
+    title: Constants.CRYPTO_LOOKUP_HEADER_TITLE,
+    tabBarIcon: ({ tintColor }) => (
+      <Image
+        source={require("../../../assets/bitcoin.png")}
+        style={[NavigationStyles.icon, { tintColor: tintColor }]}
+      />
+    )
   }
   render() {
     return <Text>Crypto Lookup page here!</Text>;
