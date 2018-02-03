@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Text, View } from "react-native";
 import Constants from "../../constants/PortfolioConstants";
-import LookupNavigator from "../../navigation/LookupNavigator"
+import LookupNavigator from "../../navigation/LookupNavigator";
 
-class ManageLookup extends React.Component {
+class ManageLookup extends Component {
   static navigationOptions = {
     title: Constants.MANAGE_LOOKUP_TITLE,
     headerTintColor: Constants.FORE_COLOR_CODE,
@@ -14,7 +14,7 @@ class ManageLookup extends React.Component {
   };
 
   render() {
-    return <LookupNavigator/>;
+    return <LookupNavigator />;
   }
 }
 

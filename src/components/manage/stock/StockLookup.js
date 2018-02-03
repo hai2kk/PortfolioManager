@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Text, View, Image } from "react-native";
-import Constants from "../../../constants/PortfolioConstants"
-import NavigationStyles from "../../../styles/NavigationStyles"
+import Constants from "../../../constants/PortfolioConstants";
+import NavigationStyles from "../../../styles/NavigationStyles";
+import SearchBar from "../../common/SearchBar";
 
 class StockLookup extends Component {
-  static navigationOptions = {  
+  static navigationOptions = {
     title: Constants.STOCK_LOOKUP_HEADER_TITLE,
     tabBarIcon: ({ tintColor }) => (
       <Image
@@ -12,10 +13,14 @@ class StockLookup extends Component {
         style={[NavigationStyles.icon, { tintColor: tintColor }]}
       />
     )
-  }
-    
+  };
+
   render() {
-    return <Text>Stock Lookup page here!</Text>;
+    return (
+      <View>
+        <SearchBar />
+      </View>
+    );
   }
 }
 
