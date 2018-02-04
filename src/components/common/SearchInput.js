@@ -1,11 +1,11 @@
-import React from "react";
+import React from "react"
 import { Text, View, TextInput, StyleSheet, Image } from "react-native";
 import Constants from "../../constants/PortfolioConstants";
 
 const SearchInput = ({ label, placeHolder, value, onChangeText }) => {
   const Styles = {
     textStyle: {
-      height: 25,
+      height: 40,
       width: 350,
       color: Constants.BACKGROUND_COLOR_CODE,
       fontSize: 19,
@@ -20,7 +20,7 @@ const SearchInput = ({ label, placeHolder, value, onChangeText }) => {
       paddingLeft: 20
     },
     viewStyle: {
-      height: 40,
+      height: 60,
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: Constants.FORE_COLOR_CODE
