@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView } from "react-native";
+import { SearchDisplayItem } from ".";
 
 class SearchResults extends Component {
   /*   componentWillMount() {
@@ -12,14 +13,9 @@ class SearchResults extends Component {
  */
 
   renderResults() {
-      console.log("Search result : "+JSON.stringify(this.props.searchResults));
+    console.log("Search result : " + JSON.stringify(this.props.searchResults));
     return this.props.searchResults.map(companyInfo => (
-      /* <MovieItem
-        key={movieDetail.id}
-        movieDetail={movieDetail}
-        navigate={this.props.navigate}
-      /> */
-      <Text>{companyInfo.name}</Text>
+      <SearchDisplayItem companyInfo={companyInfo} />
     ));
   }
 
@@ -28,4 +24,4 @@ class SearchResults extends Component {
   }
 }
 
-export default SearchResults;
+export { SearchResults };

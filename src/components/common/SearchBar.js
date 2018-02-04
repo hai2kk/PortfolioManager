@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Text, View } from "react-native";
-import SearchInput from "./SearchInput";
-import SearchResults from "./SearchResults";
+import {SearchInput,SearchResults} from ".";
 
 class SearchBar extends Component {
   state = { searchInput: "", searchResults: [] };
@@ -36,4 +35,4 @@ class SearchBar extends Component {
   }
 }
 
-export default SearchBar;
+export {SearchBar};

@@ -45,4 +45,4 @@ const SearchInput = ({ label, placeHolder, value, onChangeText }) => {
   );
 };
 
-export default SearchInput;
+export {SearchInput};
