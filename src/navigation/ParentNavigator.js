@@ -7,7 +7,7 @@ const ParentNavigator = StackNavigator({
   Home: {
     screen: TabbedNavigationComponent,
     navigationOptions: {
-      header: null
+      title: "Portfolio Manager"
     }
   },
   ManageLookup: {
