@@ -37,7 +37,7 @@ class Portfolio extends Component {
       <View style={styles.container}>
         <TouchableHighlight onPress={()=>this.createPortfolioClick()} underlayColor="white">
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Create Portfolio</Text>
+              <Text style={styles.buttonText}>Start</Text>
             </View>
           </TouchableHighlight>
       </View>
