@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import NavigationStyles from "../../styles/NavigationStyles"
+import PortfolioStyles from "../../styles/PortfolioStyles.js"
 
 class Manage extends Component {
   static navigationOptions = {
@@ -14,17 +15,8 @@ class Manage extends Component {
     )
   };
   render() {
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F5FCFF"
-      }
-    });
-
-    return (
-      <View style={styles.container}>
+     return (
+      <View style={PortfolioStyles.container}>
         <Text> Manage page</Text>
       </View>
     );
