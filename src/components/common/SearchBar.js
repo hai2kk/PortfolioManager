@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { Text, View, ScrollView, Dimensions } from "react-native";
 import { SearchInput, SearchResults } from ".";
-import {APIConstants} from "../../constants/APIConstants";
+import { APIConstants } from "../../constants/APIConstants";
 import PortFolioConstants from "../../constants/PortfolioConstants";
+import CreateStockEntry from "../manage/stock/CreateStockEntry";
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
     this.onSelection = this.onSelection.bind(this);
-    this.state = { searchInput: "", searchResults: [], lastSelection: {} };
+    this.state = { searchInput: "", searchResults: [], lastSelection: null };
   }
 
   handleSelectChange(searchInput) {
@@ -28,9 +29,8 @@ class SearchBar extends Component {
   onSelection(companyInfo) {
     let searchInput = "";
     let searchResults = [];
-    console.log("inside onSelection of Searchbar");
-    this.setState({ searchInput, searchResults });
-    console.log(JSON.stringify(companyInfo));
+    let lastSelection = companyInfo;
+    this.setState({ searchInput, searchResults, lastSelection });
   }
 
   render() {
@@ -45,6 +45,9 @@ class SearchBar extends Component {
           autoFocus={true}
           onChangeText={text => this.handleSelectChange(text)}
         />
+        <View>
+          <CreateStockEntry lastSelection={this.state.lastSelection} />
+        </View>
         <View style={{ height: screenHeight - 250 }}>
           <SearchResults
             onSelection={this.onSelection}
