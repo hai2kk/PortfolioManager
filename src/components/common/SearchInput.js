@@ -1,8 +1,14 @@
-import React from "react"
+import React from "react";
 import { Text, View, TextInput, StyleSheet, Image } from "react-native";
 import Constants from "../../constants/PortfolioConstants";
 
-const SearchInput = ({ label, placeHolder, value, onChangeText }) => {
+const SearchInput = ({
+  label,
+  placeHolder,
+  value,
+  onChangeText,
+  autoFocus
+}) => {
   const Styles = {
     textStyle: {
       height: 40,
@@ -38,6 +44,7 @@ const SearchInput = ({ label, placeHolder, value, onChangeText }) => {
         placeholder={placeHolder}
         underlineColorAndroid="transparent"
         value={value}
+        autoFocus={autoFocus}
         onChangeText={onChangeText}
         style={textStyle}
       />
@@ -45,4 +52,4 @@ const SearchInput = ({ label, placeHolder, value, onChangeText }) => {
   );
 };
 
-export {SearchInput};
+export { SearchInput };

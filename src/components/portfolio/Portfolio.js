@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
-import NavigationStyles from "../../styles/NavigationStyles"
+import NavigationStyles from "../../styles/NavigationStyles";
 
 class Portfolio extends Component {
   static navigationOptions = {
@@ -17,6 +17,7 @@ class Portfolio extends Component {
     const styles = StyleSheet.create({
       container: {
         flex: 1,
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#F5FCFF"

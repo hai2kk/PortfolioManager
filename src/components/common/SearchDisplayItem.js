@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import PortfolioConstants from "../../constants/PortfolioConstants";
 
-const SearchDisplayItem = ({ companyInfo }) => {
+const SearchDisplayItem = ({ companyInfo, onSelection }) => {
   const Styles = {
     companyStyle: {
       color: PortfolioConstants.FORE_COLOR_CODE,
@@ -28,17 +28,23 @@ const SearchDisplayItem = ({ companyInfo }) => {
   };
 
   const { companyStyle, symbolStyle, indexStyle, viewStyle } = Styles;
-
+  let companyData = companyInfo;
   return (
-    <View style={viewStyle}>
-      <Text style={companyStyle} ellipsizeMode="tail">
-        {companyInfo.name}
-      </Text>
-      <Text style={indexStyle}>
-        {companyInfo.typeDisp} {companyInfo.exchDisp}
-      </Text>
-      <Text style={symbolStyle}>({companyInfo.symbol})</Text>
-    </View>
+    <TouchableOpacity
+      onPress={() => {
+        onSelection(companyData);
+      }}
+    >
+      <View style={viewStyle}>
+        <Text style={companyStyle} ellipsizeMode="tail">
+          {companyInfo.name}
+        </Text>
+        <Text style={indexStyle}>
+          {companyInfo.typeDisp} {companyInfo.exchDisp}
+        </Text>
+        <Text style={symbolStyle}>({companyInfo.symbol})</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
