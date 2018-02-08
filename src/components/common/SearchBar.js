@@ -30,7 +30,6 @@ class SearchBar extends Component {
     let searchInput = "";
     let searchResults = [];
     let lastSelection = companyInfo;
-    console.log(lastSelection);
     this.setState({ searchInput, searchResults, lastSelection });
   }
 

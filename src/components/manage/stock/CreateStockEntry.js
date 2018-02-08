@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Button } from "react-native";
+import { Text, View, Button, AsyncStorage } from "react-native";
 import PortfolioConstants from "../../../constants/PortfolioConstants";
 import { Input } from "../../common/";
 
@@ -111,11 +111,45 @@ export default class CreateStockEntry extends Component {
   onSave() {
     const { name, symbol, exchDisp } = this.props.lastSelection;
     const { quantity, price } = this.state;
-    console.log(`Name : ${name}`);
+    /*     console.log(`Name : ${name}`);
     console.log(`Symbol : ${symbol}`);
     console.log(`Exchange : ${exchDisp}`);
     console.log(`Quantity : ${quantity}`);
-    console.log(`Price : ${price}`); 
+    console.log(`Price : ${price}`); */
 
+    /*  let response = await AsyncStorage.getItem("portfolioDetails");
+    let portfolioDetails = (await JSON.parse(response)) || [];
+    let { stockDetails = [] } = portfolioDetails;
+
+    const stockObj = {
+      name: name,
+      symbol: symbol,
+      exchDisp: exchDisp,
+      quantity: quantity,
+      price: price
+    };
+
+    console.log(stockDetails);
+    stockDetails.push(stockObj);
+    portfolioDetails.stockDetails = stockDetails;
+
+    await AsyncStorage.setItem("portfolioDetails", JSON.stringify(portfolioDetails)); */
+
+    AsyncStorage.getItem("portfolioDetails").then(portfolioDetails => {
+      let { stockDetails = [] } = JSON.parse(portfolioDetails);
+      console.log(stockDetails);
+      const stockDetailsObj = {
+        name: name,
+        symbol: symbol,
+        exchDisp: exchDisp,
+        quantity: quantity,
+        price: price
+      };
+      portfolioDetails.stockDetails.push(stockDetailsObj);
+      AsyncStorage.setItem(
+        "portfolioDetails",
+        JSON.stringify(portfolioDetails)
+      );
+    });
   }
 }
