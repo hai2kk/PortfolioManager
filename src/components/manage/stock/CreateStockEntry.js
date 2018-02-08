@@ -44,6 +44,8 @@ export default class CreateStockEntry extends Component {
       },
       buttonStyle: {
         height: 50,
+        textAlign: "center",
+        width: 40,
         backgroundColor: PortfolioConstants.FORE_COLOR_CODE
       }
     };
@@ -101,6 +103,7 @@ export default class CreateStockEntry extends Component {
           <Button
             onPress={this.onSave}
             title="Save"
+            color={PortfolioConstants.FORE_COLOR_CODE}
             accessibilityLabel="Add to porfolio"
           />
         </View>
@@ -108,19 +111,14 @@ export default class CreateStockEntry extends Component {
     );
   }
 
-  onSave() {
+  async onSave() {
     const { name, symbol, exchDisp } = this.props.lastSelection;
     const { quantity, price } = this.state;
-    /*     console.log(`Name : ${name}`);
-    console.log(`Symbol : ${symbol}`);
-    console.log(`Exchange : ${exchDisp}`);
-    console.log(`Quantity : ${quantity}`);
-    console.log(`Price : ${price}`); */
 
-    /*  let response = await AsyncStorage.getItem("portfolioDetails");
-    let portfolioDetails = (await JSON.parse(response)) || [];
+    let response = await AsyncStorage.getItem("portfolioDetails");
+    let portfolioDetails = (await JSON.parse(response)) || {};
     let { stockDetails = [] } = portfolioDetails;
-
+    console.log(stockDetails);
     const stockObj = {
       name: name,
       symbol: symbol,
@@ -129,27 +127,13 @@ export default class CreateStockEntry extends Component {
       price: price
     };
 
-    console.log(stockDetails);
     stockDetails.push(stockObj);
     portfolioDetails.stockDetails = stockDetails;
 
-    await AsyncStorage.setItem("portfolioDetails", JSON.stringify(portfolioDetails)); */
-
-    AsyncStorage.getItem("portfolioDetails").then(portfolioDetails => {
-      let { stockDetails = [] } = JSON.parse(portfolioDetails);
-      console.log(stockDetails);
-      const stockDetailsObj = {
-        name: name,
-        symbol: symbol,
-        exchDisp: exchDisp,
-        quantity: quantity,
-        price: price
-      };
-      portfolioDetails.stockDetails.push(stockDetailsObj);
-      AsyncStorage.setItem(
-        "portfolioDetails",
-        JSON.stringify(portfolioDetails)
-      );
-    });
+    await AsyncStorage.setItem(
+      "portfolioDetails",
+      JSON.stringify(portfolioDetails)
+    );
+    this.props.reset();
   }
 }

@@ -9,6 +9,7 @@ class SearchBar extends Component {
   constructor(props) {
     super(props);
     this.onSelection = this.onSelection.bind(this);
+    this.reset = this.reset.bind(this);
     this.state = { searchInput: "", searchResults: [], lastSelection: null };
   }
 
@@ -33,6 +34,13 @@ class SearchBar extends Component {
     this.setState({ searchInput, searchResults, lastSelection });
   }
 
+  reset(){
+    let searchInput = "";
+    let searchResults = [];
+    let lastSelection = null;
+    this.setState({ searchInput, searchResults, lastSelection });
+  }
+
   render() {
     let screenHeight = Dimensions.get("window").height;
 
@@ -46,7 +54,7 @@ class SearchBar extends Component {
           onChangeText={text => this.handleSelectChange(text)}
         />
         <View>
-          <CreateStockEntry lastSelection={this.state.lastSelection} />
+          <CreateStockEntry lastSelection={this.state.lastSelection} reset={this.reset}/>
         </View>
         <View style={{ height: screenHeight - 250 }}>
           <SearchResults
