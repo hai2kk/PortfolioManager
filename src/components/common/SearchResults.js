@@ -15,7 +15,7 @@ class SearchResults extends Component {
 
   render() {
     return (
-      <ScrollView contentContainerStyle={{ flex: 0 }}>
+      <ScrollView keyboardShouldPersistTaps={'never'} keyboardDismissMode='on-drag'>
         {this.renderResults()}
       </ScrollView>
     );

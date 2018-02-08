@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Text, View, Image } from "react-native";
 import Constants from "../../../constants/PortfolioConstants";
 import NavigationStyles from "../../../styles/NavigationStyles";
-import {SearchBar} from "../../common/";
+import { SearchBar } from "../../common/";
 
 class StockLookup extends Component {
   static navigationOptions = {

@@ -21,7 +21,7 @@ class SearchBar extends Component {
     let response = fetch(stockDataURL)
       .then(response => response.json())
       .then(responseData => {
-        this.setState({ searchResults: responseData.ResultSet.Result });
+        this.setState({ searchResults: responseData.ResultSet.Result,lastSelection : null });
       })
       .done();
   }
@@ -30,6 +30,7 @@ class SearchBar extends Component {
     let searchInput = "";
     let searchResults = [];
     let lastSelection = companyInfo;
+    console.log(lastSelection);
     this.setState({ searchInput, searchResults, lastSelection });
   }
 
