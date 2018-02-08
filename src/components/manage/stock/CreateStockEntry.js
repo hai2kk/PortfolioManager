@@ -42,18 +42,19 @@ export default class CreateStockEntry extends Component {
         alignItems: "center",
         textAlign: "left"
       },
-      buttonStyle: {
+      buttonViewStyle: {
         height: 50,
         textAlign: "center",
-        width: 40,
-        backgroundColor: PortfolioConstants.FORE_COLOR_CODE
+        alignItems : "center",
+        marginTop : 10
       }
     };
     const {
       mainTitleStyle,
       titleStyle,
       detailsViewStyle,
-      inputViewStyle
+      inputViewStyle,
+      buttonViewStyle
     } = styles;
 
     if (this.props.lastSelection === null) {
@@ -99,7 +100,7 @@ export default class CreateStockEntry extends Component {
             onChangeText={price => this.setState({ price })}
           />
         </View>
-        <View>
+        <View style={buttonViewStyle}>
           <Button
             onPress={this.onSave}
             title="Save"
