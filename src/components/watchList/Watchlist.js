@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import NavigationStyles from "../../styles/NavigationStyles"
+import PortfolioStyles from "../../styles/PortfolioStyles.js"
 
 class Watchlist extends Component {
   static navigationOptions = {
@@ -13,17 +14,8 @@ class Watchlist extends Component {
     )
   };
   render() {
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F5FCFF"
-      }
-    });
-
     return (
-      <View style={styles.container}>
+      <View style={PortfolioStyles.container}>
         <Text> Watchlist page</Text>
       </View>
     );
