@@ -1,9 +1,15 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Image, TouchableHighlight } from "react-native";
-import NavigationStyles from "../../styles/NavigationStyles"
-import Constants from '../../constants/PortfolioConstants.js'
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableHighlight
+} from "react-native";
+import NavigationStyles from "../../styles/NavigationStyles";
+import Constants from "../../constants/PortfolioConstants.js";
 import { NavigationActions } from "react-navigation";
-import PortfolioStyles from "../../styles/PortfolioStyles.js"
+import PortfolioStyles from "../../styles/PortfolioStyles.js";
 
 class Portfolio extends Component {
   static navigationOptions = {
@@ -17,17 +23,30 @@ class Portfolio extends Component {
   };
 
   render() {
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F5FCFF"
+      }
+    });
+
     return (
       <View style={PortfolioStyles.container}>
-        <TouchableHighlight onPress={()=>this.createPortfolioClick()} underlayColor="white">
-            <View style={PortfolioStyles.button}>
-              <Text style={PortfolioStyles.buttonText}>Start</Text>
-            </View>
-          </TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => this.createPortfolioClick()}
+          underlayColor="white"
+        >
+          <View style={PortfolioStyles.button}>
+            <Text style={PortfolioStyles.buttonText}>Start</Text>
+          </View>
+        </TouchableHighlight>
       </View>
     );
   }
-  createPortfolioClick(){
+  createPortfolioClick() {
     const navigateAction = NavigationActions.navigate({
       routeName: "ManageLookup",
       params: {},
