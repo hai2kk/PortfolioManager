@@ -22,8 +22,7 @@ const SearchDisplayItem = ({ companyInfo, onSelection }) => {
       paddingLeft: 5,
       borderBottomWidth: 1,
       borderBottomColor: PortfolioConstants.FORE_COLOR_CODE,
-      alignItems: "center",
-      textAlign: "left"
+      alignItems: "center"
     }
   };
 
