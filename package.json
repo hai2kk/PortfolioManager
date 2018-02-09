@@ -19,8 +19,11 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+<<<<<<< HEAD
     "axios": "^0.17.1",
     "exp": "^49.2.2",
+=======
+>>>>>>> 33e4130... Implementation for retriving the persisted information to the portfolio page
     "expo": "^25.0.0",
     "react": "16.2.0",
     "react-native": "0.52.0",
