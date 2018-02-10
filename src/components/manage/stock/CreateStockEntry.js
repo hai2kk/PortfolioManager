@@ -11,8 +11,8 @@ export default class CreateStockEntry extends Component {
       name: "",
       symbol: "",
       exchange: "",
-      quantity: 0,
-      price: 0
+      quantity: "",
+      price: ""
     };
 
     this.onSave = this.onSave.bind(this);
@@ -21,7 +21,6 @@ export default class CreateStockEntry extends Component {
   render() {
     styles = {
       mainTitleStyle: {
-        fontSize: 16,
         paddingLeft: 10
       },
       titleStyle: {
@@ -39,14 +38,12 @@ export default class CreateStockEntry extends Component {
         paddingLeft: 5,
         borderBottomWidth: 1,
         borderBottomColor: PortfolioConstants.FORE_COLOR_CODE,
-        alignItems: "center",
-        textAlign: "left"
+        alignItems: "center"
       },
       buttonViewStyle: {
         height: 50,
-        textAlign: "center",
-        alignItems : "center",
-        marginTop : 10
+        alignItems: "center",
+        marginTop: 10
       }
     };
     const {
@@ -82,7 +79,7 @@ export default class CreateStockEntry extends Component {
         </View>
         <View style={inputViewStyle}>
           <Text style={titleStyle}>
-            {PortfolioConstants.SEARCH_RESULT_PURCHASE_PRICE} :{" "}
+            {PortfolioConstants.SEARCH_RESULT_PURCHASE_QUANTITY} :{" "}
           </Text>
           <Input
             placeHolder="Quantity"
@@ -92,7 +89,7 @@ export default class CreateStockEntry extends Component {
         </View>
         <View style={inputViewStyle}>
           <Text style={titleStyle}>
-            {PortfolioConstants.SEARCH_RESULT_PURCHASE_QUANTITY} :{" "}
+            {PortfolioConstants.SEARCH_RESULT_PURCHASE_PRICE} :{" "}
           </Text>
           <Input
             placeHolder="Price"
