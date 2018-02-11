@@ -18,7 +18,7 @@ class StockLookup extends Component {
   render() {
     return (
       <View>
-        <SearchBar />
+        <SearchBar mobxStore={this.props.screenProps}/>
       </View>
     );
   }

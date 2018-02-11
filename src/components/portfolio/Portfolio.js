@@ -13,7 +13,9 @@ import Constants from "../../constants/PortfolioConstants.js";
 import { NavigationActions } from "react-navigation";
 import PortfolioStyles from "../../styles/PortfolioStyles.js";
 import { PortfolioContent } from "./PortfolioContent";
+import {observer} from 'mobx-react/native'
 
+@observer
 class Portfolio extends Component {
   static navigationOptions = {
     tabBarLabel: "Portfolio",
@@ -37,11 +39,11 @@ class Portfolio extends Component {
   }
 
   onDelete(index) {
+    let mobxStore = this.props.screenProps.store;
     let stateObj = this.state;
-    let stockDetails = stateObj.stockDetails;
+    let stockDetails = mobxStore.list;
     stockDetails.splice(index, 1);
-    stateObj.stockDetails = stockDetails;
-    this.setState(stateObj);
+    mobxStore.list=stockDetails;
     let portfolioDetails = {};
     portfolioDetails.stockDetails = stockDetails;
     AsyncStorage.setItem("portfolioDetails", JSON.stringify(portfolioDetails));
@@ -62,6 +64,8 @@ class Portfolio extends Component {
     portfolioDetails.stockDetails = stockDetails;
     AsyncStorage.setItem("portfolioDetails",JSON.stringify(portfolioDetails));
  */
+    //AsyncStorage.clear();
+    let mobxStore = this.props.screenProps.store;
     AsyncStorage.getItem("portfolioDetails").then(response => {
       let portfolioDetails = JSON.parse(response);
       let stateObj = {};
@@ -81,12 +85,19 @@ class Portfolio extends Component {
           showStart: true
         };
       }
+      if(portfolioDetails){
+        portfolioDetails.stockDetails.forEach(element => {
+          mobxStore.addItem(element);
+        });
+      }
       this.setState(stateObj);
     });
   }
 
   renderPortfolioDetails() {
-    return this.state.stockDetails.map((stockDetail, index) => (
+    let mobxStore = this.props.screenProps.store;
+    
+    return mobxStore.list.map((stockDetail, index) => (
       <PortfolioContent
         key={index}
         index={index}
@@ -97,6 +108,8 @@ class Portfolio extends Component {
   }
 
   render() {
+    //console.log("Portfolio:");
+    //console.log(this.props.screenProps.store);
     if (this.state.isLoading) {
       return (
         <View>

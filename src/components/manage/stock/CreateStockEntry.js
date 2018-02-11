@@ -125,6 +125,8 @@ export default class CreateStockEntry extends Component {
       price: price
     };
 
+    this.props.mobxStore.addItem(stockObj);
+    
     stockDetails.push(stockObj);
     portfolioDetails.stockDetails = stockDetails;
 
