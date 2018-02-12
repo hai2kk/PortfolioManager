@@ -13,6 +13,10 @@ class mobxStore {
     this.list = [];
   }
 
+  deleteItem (index){
+    this.list.splice(index,1);
+  }
+
   print(){
       console.log("printing mobxStore:")
       for(i=0;i<this.list.length;i++){

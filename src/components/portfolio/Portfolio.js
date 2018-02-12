@@ -40,13 +40,8 @@ class Portfolio extends Component {
 
   onDelete(index) {
     let mobxStore = this.props.screenProps.store;
-    let stateObj = this.state;
-    let stockDetails = mobxStore.list;
-    stockDetails.splice(index, 1);
-    mobxStore.list=stockDetails;
-    let portfolioDetails = {};
-    portfolioDetails.stockDetails = stockDetails;
-    AsyncStorage.setItem("portfolioDetails", JSON.stringify(portfolioDetails));
+    mobxStore.deleteItem(index);
+    AsyncStorage.setItem("portfolioDetails", JSON.stringify(mobxStore.list));
   }
 
   componentDidMount() {
@@ -65,6 +60,7 @@ class Portfolio extends Component {
     AsyncStorage.setItem("portfolioDetails",JSON.stringify(portfolioDetails));
  */
     //AsyncStorage.clear();
+    console.log("portfolio:")
     let mobxStore = this.props.screenProps.store;
     AsyncStorage.getItem("portfolioDetails").then(response => {
       let portfolioDetails = JSON.parse(response);
@@ -86,11 +82,13 @@ class Portfolio extends Component {
         };
       }
       if(portfolioDetails){
-        portfolioDetails.stockDetails.forEach(element => {
+        console.log(portfolioDetails); 
+        portfolioDetails.forEach(element => {
           mobxStore.addItem(element);
         });
       }
       this.setState(stateObj);
+      console.log(this.state.isLoading);  
     });
   }
 
@@ -108,8 +106,7 @@ class Portfolio extends Component {
   }
 
   render() {
-    //console.log("Portfolio:");
-    //console.log(this.props.screenProps.store);
+    let mobxStore = this.props.screenProps.store;
     if (this.state.isLoading) {
       return (
         <View>
@@ -118,7 +115,7 @@ class Portfolio extends Component {
       );
     }
 
-    if (this.state.showStart) {
+    if (mobxStore.list.length===0) {
       return (
         <View style={PortfolioStyles.container}>
           <TouchableHighlight
@@ -132,7 +129,7 @@ class Portfolio extends Component {
         </View>
       );
     }
-    if (this.state.hasOwnProperty("stockDetails")) {
+    else {
       return (
         <View>
           <ScrollView>{this.renderPortfolioDetails()}</ScrollView>
