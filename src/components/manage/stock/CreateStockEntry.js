@@ -116,7 +116,6 @@ export default class CreateStockEntry extends Component {
     let response = await AsyncStorage.getItem("portfolioDetails");
     let portfolioDetails = (await JSON.parse(response)) || {};
     let { stockDetails = [] } = portfolioDetails;
-    console.log(stockDetails);
     const stockObj = {
       name: name,
       symbol: symbol,
@@ -124,15 +123,11 @@ export default class CreateStockEntry extends Component {
       quantity: quantity,
       price: price
     };
-
-    this.props.mobxStore.addItem(stockObj);
     
-    stockDetails.push(stockObj);
-    portfolioDetails.stockDetails = stockDetails;
-
+    this.props.mobxStore.addStock(stockObj);
     await AsyncStorage.setItem(
-      "portfolioDetails",
-      JSON.stringify(portfolioDetails)
+      "stockDetails",
+      JSON.stringify(this.props.mobxStore.stocks)
     );
     this.props.reset();
   }

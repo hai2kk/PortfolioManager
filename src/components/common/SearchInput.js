@@ -42,6 +42,7 @@ const SearchInput = ({
       <Image style={imageStyle} source={require("../../assets/search.png")} />
       <TextInput
         placeholder={placeHolder}
+        placeholderTextColor={Constants.BACKGROUND_COLOR_CODE}
         underlineColorAndroid="transparent"
         value={value}
         autoFocus={autoFocus}

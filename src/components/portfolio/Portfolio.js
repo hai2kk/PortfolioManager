@@ -30,72 +30,45 @@ class Portfolio extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stockDetails: [],
-      cryptoDetails: [],
-      isLoading: true,
-      showStart: false
+      isLoading: true
     };
     this.onDelete = this.onDelete.bind(this);
   }
 
   onDelete(index) {
     let mobxStore = this.props.screenProps.store;
-    mobxStore.deleteItem(index);
-    AsyncStorage.setItem("portfolioDetails", JSON.stringify(mobxStore.list));
+    mobxStore.deleteStock(index);
+    AsyncStorage.setItem("stockDetails", JSON.stringify(mobxStore.stocks));
   }
 
   componentDidMount() {
-    /*     let portfolioDetails = {};
-    let { stockDetails = [] } = [];
-    const stockObj = {
-      name: 'sds',
-      symbol: 'sdsd',
-      exchDisp: 'sdsdsd',
-      quantity: 'sdsd',
-      price: 'sdsd'
-    };
-
-    stockDetails.push(stockObj);
-    portfolioDetails.stockDetails = stockDetails;
-    AsyncStorage.setItem("portfolioDetails",JSON.stringify(portfolioDetails));
- */
     //AsyncStorage.clear();
-    console.log("portfolio:")
     let mobxStore = this.props.screenProps.store;
-    AsyncStorage.getItem("portfolioDetails").then(response => {
-      let portfolioDetails = JSON.parse(response);
-      let stateObj = {};
-      if (portfolioDetails) {
-        const { stockDetails } = portfolioDetails;
-        stateObj = {
-          stockDetails: stockDetails,
-          cryptoDetails: [],
-          isLoading: false,
-          showStart: false
-        };
-      } else {
-        stateObj = {
-          stockDetails: [],
-          cryptoDetails: [],
-          isLoading: false,
-          showStart: true
-        };
-      }
-      if(portfolioDetails){
-        console.log(portfolioDetails); 
-        portfolioDetails.forEach(element => {
-          mobxStore.addItem(element);
+    AsyncStorage.getItem("stockDetails").then(response => {
+      this.setState({isLoading:false});
+      let stockDetails = JSON.parse(response);
+      if (stockDetails) {
+        stockDetails.forEach(element => {
+          mobxStore.addStock(element);
         });
-      }
-      this.setState(stateObj);
-      console.log(this.state.isLoading);  
+      }        
     });
+    AsyncStorage.getItem("cryptoDetails").then(response => {
+      this.state.setState({isLoading:false});
+      let cryptoDetails = JSON.parse(response);
+      if (cryptoDetails) {
+        cryptoDetails.forEach(element => {
+          mobxStore.addCrypto(element);
+        });
+      }        
+    });
+    mobxStore.print();
   }
 
   renderPortfolioDetails() {
     let mobxStore = this.props.screenProps.store;
     
-    return mobxStore.list.map((stockDetail, index) => (
+    return mobxStore.stocks.map((stockDetail, index) => (
       <PortfolioContent
         key={index}
         index={index}
@@ -115,7 +88,7 @@ class Portfolio extends Component {
       );
     }
 
-    if (mobxStore.list.length===0) {
+    if (mobxStore.stocks.length===0) {
       return (
         <View style={PortfolioStyles.container}>
           <TouchableHighlight

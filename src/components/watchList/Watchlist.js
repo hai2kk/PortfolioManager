@@ -8,7 +8,7 @@ class Watchlist extends Component {
     tabBarLabel: "Watchlist",
     tabBarIcon: ({ tintColor }) => (
       <Image
-        source={require("../../assets/watchlist.png")}
+        source={require("../../assets/search.png")}
         style={[NavigationStyles.icon, { tintColor: tintColor }]}
       />
     )
