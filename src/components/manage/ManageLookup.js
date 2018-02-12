@@ -14,7 +14,7 @@ class ManageLookup extends Component {
   };
 
   render() {
-    return <LookupNavigator />;
+    return <LookupNavigator screenProps={this.props.screenProps}/>;
   }
 }
 

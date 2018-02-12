@@ -13,7 +13,9 @@ import Constants from "../../constants/PortfolioConstants.js";
 import { NavigationActions } from "react-navigation";
 import PortfolioStyles from "../../styles/PortfolioStyles.js";
 import { PortfolioContent } from "./PortfolioContent";
+import {observer} from 'mobx-react/native'
 
+@observer
 class Portfolio extends Component {
   static navigationOptions = {
     tabBarLabel: "Portfolio",
@@ -28,65 +30,45 @@ class Portfolio extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stockDetails: [],
-      cryptoDetails: [],
-      isLoading: true,
-      showStart: false
+      isLoading: true
     };
     this.onDelete = this.onDelete.bind(this);
   }
 
   onDelete(index) {
-    let stateObj = this.state;
-    let stockDetails = stateObj.stockDetails;
-    stockDetails.splice(index, 1);
-    stateObj.stockDetails = stockDetails;
-    this.setState(stateObj);
-    let portfolioDetails = {};
-    portfolioDetails.stockDetails = stockDetails;
-    AsyncStorage.setItem("portfolioDetails", JSON.stringify(portfolioDetails));
+    let mobxStore = this.props.screenProps.store;
+    mobxStore.deleteStock(index);
+    AsyncStorage.setItem("stockDetails", JSON.stringify(mobxStore.stocks));
   }
 
   componentDidMount() {
-    /*     let portfolioDetails = {};
-    let { stockDetails = [] } = [];
-    const stockObj = {
-      name: 'sds',
-      symbol: 'sdsd',
-      exchDisp: 'sdsdsd',
-      quantity: 'sdsd',
-      price: 'sdsd'
-    };
-
-    stockDetails.push(stockObj);
-    portfolioDetails.stockDetails = stockDetails;
-    AsyncStorage.setItem("portfolioDetails",JSON.stringify(portfolioDetails));
- */
-    AsyncStorage.getItem("portfolioDetails").then(response => {
-      let portfolioDetails = JSON.parse(response);
-      let stateObj = {};
-      if (portfolioDetails) {
-        const { stockDetails } = portfolioDetails;
-        stateObj = {
-          stockDetails: stockDetails,
-          cryptoDetails: [],
-          isLoading: false,
-          showStart: false
-        };
-      } else {
-        stateObj = {
-          stockDetails: [],
-          cryptoDetails: [],
-          isLoading: false,
-          showStart: true
-        };
-      }
-      this.setState(stateObj);
+    //AsyncStorage.clear();
+    let mobxStore = this.props.screenProps.store;
+    AsyncStorage.getItem("stockDetails").then(response => {
+      this.setState({isLoading:false});
+      let stockDetails = JSON.parse(response);
+      if (stockDetails) {
+        stockDetails.forEach(element => {
+          mobxStore.addStock(element);
+        });
+      }        
     });
+    AsyncStorage.getItem("cryptoDetails").then(response => {
+      this.state.setState({isLoading:false});
+      let cryptoDetails = JSON.parse(response);
+      if (cryptoDetails) {
+        cryptoDetails.forEach(element => {
+          mobxStore.addCrypto(element);
+        });
+      }        
+    });
+    mobxStore.print();
   }
 
   renderPortfolioDetails() {
-    return this.state.stockDetails.map((stockDetail, index) => (
+    let mobxStore = this.props.screenProps.store;
+    
+    return mobxStore.stocks.map((stockDetail, index) => (
       <PortfolioContent
         key={index}
         index={index}
@@ -97,6 +79,7 @@ class Portfolio extends Component {
   }
 
   render() {
+    let mobxStore = this.props.screenProps.store;
     if (this.state.isLoading) {
       return (
         <View>
@@ -105,7 +88,7 @@ class Portfolio extends Component {
       );
     }
 
-    if (this.state.showStart) {
+    if (mobxStore.stocks.length===0) {
       return (
         <View style={PortfolioStyles.container}>
           <TouchableHighlight
@@ -119,7 +102,7 @@ class Portfolio extends Component {
         </View>
       );
     }
-    if (this.state.hasOwnProperty("stockDetails")) {
+    else {
       return (
         <View>
           <ScrollView>{this.renderPortfolioDetails()}</ScrollView>

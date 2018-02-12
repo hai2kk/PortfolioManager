@@ -54,7 +54,7 @@ class SearchBar extends Component {
           onChangeText={text => this.handleSelectChange(text)}
         />
         <View>
-          <CreateStockEntry lastSelection={this.state.lastSelection} reset={this.reset}/>
+          <CreateStockEntry mobxStore={this.props.mobxStore} lastSelection={this.state.lastSelection} reset={this.reset}/>
         </View>
         <View style={{ height: screenHeight - 250 }}>
           <SearchResults
