@@ -28,14 +28,14 @@ class mobxStore {
   }
 
   print(){
-      console.log("printing Stocks:")
+/*       console.log("printing Stocks:")
       for(i=0;i<this.stocks.length;i++){
           console.log(this.stocks[i]);
       }
       console.log("printing Crypto:")
       for(i=0;i<this.crypto.length;i++){
           console.log(this.crypto[i]);
-      }
+      } */
   }
 }
 

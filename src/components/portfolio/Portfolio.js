@@ -9,10 +9,9 @@ import {
   AsyncStorage
 } from "react-native";
 import NavigationStyles from "../../styles/NavigationStyles";
-import Constants from "../../constants/PortfolioConstants.js";
 import { NavigationActions } from "react-navigation";
 import PortfolioStyles from "../../styles/PortfolioStyles.js";
-import { PortfolioContent } from "./PortfolioContent";
+import PortfolioContent from "./PortfolioContent";
 import {observer} from 'mobx-react/native'
 
 @observer

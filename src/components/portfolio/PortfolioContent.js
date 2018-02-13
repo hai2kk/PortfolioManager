@@ -1,98 +1,113 @@
-import React from "react";
+import React, { Component } from "react";
 import { View, Text, Image, TouchableHighlight } from "react-native";
-import Constants from "../../constants/PortfolioConstants";
+import { APIConstants } from "../../constants/APIConstants";
+import { PortfolioContentStyles } from "../../styles/PortfolioContentStyles";
+import { retrieveData } from "../../utils/PortFolioDataUtil";
+import PortfolioConstants from "../../constants/PortfolioConstants"
 
-const PortfolioContent = ({ index, stockDetail, onDelete }) => {
-  const {
-    titleStyle,
-    overviewStyle,
-    imageStyle,
-    containerStyle,
-    contentsText,
-    contentsImage,
-    firstRowStyle
-  } = styles;
-
-  const { name, symbol, quantity, price, exchDisp } = stockDetail;
-
-  return (
-    <View style={containerStyle}>
-      <View style={contentsText}>
-        <View style={firstRowStyle}>
-          <Text numberOfLines={1} style={titleStyle}>
-            {symbol}
-          </Text>
-          <Text numberOfLines={1} style={overviewStyle}>
-            {quantity} at {price}
-          </Text>
-        </View>
-        <Text numberOfLines={1} style={overviewStyle}>
-          {name}
-        </Text>
-        <Text numberOfLines={1} style={overviewStyle}>
-          {exchDisp}
-        </Text>
-      </View>
-      <View style={contentsImage}>
-        <TouchableHighlight onPress={() => onDelete(index)}>
-          <Image
-            style={imageStyle}
-            source={require("../../assets/delete.png")}
-          />
-        </TouchableHighlight>
-      </View>
-    </View>
-  );
-};
-
-const styles = {
-  containerStyle: {
-    flexDirection: "row",
-    height: 80,
-    paddingTop: 10,
-    borderColor: "#d6d7da",
-    borderWidth: 0.5,
-    borderRadius: 10,
-    paddingLeft: 10
-  },
-  contentsText: {
-    flex: 3,
-    flexDirection: "column"
-  },
-  contentsImage: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  titleStyle: {
-    fontSize: 20,
-    color: "#010a16",
-    paddingLeft: 10,
-    color: Constants.FORE_COLOR_CODE,
-    justifyContent: "space-around",
-    flex: 2
-  },
-  overviewStyle: {
-    fontSize: 16,
-    color: "#000814",
-    paddingLeft: 10,
-    width: 180,
-    flex: 2,
-    flexWrap: "nowrap",
-    justifyContent: "space-around",
-    alignItems: "center"
-  },
-  imageStyle: {
-    marginLeft: 15,
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row"
-  },
-  firstRowStyle: {
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    justifyContent: "flex-start"
+export default class PortfolioContent extends Component {
+  constructor(props) {
+    super(props);
+    const closingPrice = "";
+    let indicator = "";
+    const {PORT_FOLIO_NO_CHANGE_COLOR,PORT_FOLIO_UP_COLOR,PORT_FOLIO_DOWN_COLOR} = PortfolioConstants;
+    this.state = {
+      closingPrice,
+      indicator : PORT_FOLIO_NO_CHANGE_COLOR
+    };
   }
-};
 
-export { PortfolioContent };
+  componentDidMount() {
+    const query = this.props.stockDetail.symbol;
+    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+    const timeSeriesDataURL = getTimeSeriesDataURL(query);
+    let closingPriceObj,
+      closingPrice = "";
+    const currentPrice = parseFloat(this.props.stockDetail.price);
+
+    retrieveData(timeSeriesDataURL)
+      .then(responseData => {
+        const map = new Map(Object.entries(responseData));
+        map.forEach((valueObj, key) => {
+          if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
+            closingPriceObj = Object.values(valueObj)[
+              Object.values(valueObj).length - 1
+            ];
+            closingPrice =
+              closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY];
+            closingPrice = parseFloat(closingPrice).toFixed(2);
+          }
+        });
+
+        this.setState({
+          ...this.state,
+          closingPrice,
+          indicator: getIndicator(closingPrice, currentPrice)
+        });
+      })
+      .done();
+
+    const getIndicator = (closingPrice, currentPrice) => {
+      const {PORT_FOLIO_NO_CHANGE_COLOR,PORT_FOLIO_UP_COLOR,PORT_FOLIO_DOWN_COLOR} = PortfolioConstants;
+      let indicator = PORT_FOLIO_NO_CHANGE_COLOR;
+      if (closingPrice > currentPrice) {
+        indicator = PORT_FOLIO_UP_COLOR;
+      }
+
+      if (closingPrice < currentPrice) {
+        indicator = PORT_FOLIO_DOWN_COLOR;
+      }
+      return indicator;
+    };
+  }
+
+  render() {
+    const { index, stockDetail, onDelete } = this.props;
+    const { name, symbol, quantity, price, exchDisp } = stockDetail;
+    const {
+      titleStyle,
+      overviewStyle,
+      imageStyle,
+      containerStyle,
+      contentsText,
+      contentsImage,
+      firstRowStyle,
+      indicatorViewStyle,
+      indicatorContentStyle
+    } = PortfolioContentStyles;
+    
+    return (
+      <View style={containerStyle}>
+        <View style={contentsText}>
+          <View style={firstRowStyle}>
+            <Text numberOfLines={1} style={titleStyle}>
+              {symbol}
+            </Text>
+            <Text numberOfLines={1} style={overviewStyle}>
+              {quantity} at {price}
+            </Text>
+          </View>
+          <Text numberOfLines={1} style={overviewStyle}>
+            {name}
+          </Text>
+          <View style={indicatorViewStyle}>
+            <Text numberOfLines={1} style={overviewStyle}>
+              {exchDisp}
+            </Text>
+            <Text style={[indicatorContentStyle,{backgroundColor : this.state.indicator}]}>
+              {this.state.closingPrice}
+            </Text>
+          </View>
+        </View>
+        <View style={contentsImage}>
+          <TouchableHighlight onPress={() => onDelete(index)}>
+            <Image
+              style={imageStyle}
+              source={require("../../assets/delete.png")}
+            />
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
+  }
+}

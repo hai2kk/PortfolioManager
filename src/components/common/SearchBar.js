@@ -4,6 +4,7 @@ import { SearchInput, SearchResults } from ".";
 import { APIConstants } from "../../constants/APIConstants";
 import PortFolioConstants from "../../constants/PortfolioConstants";
 import CreateStockEntry from "../manage/stock/CreateStockEntry";
+import { retrieveData } from "../../utils/PortFolioDataUtil";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -19,10 +20,12 @@ class SearchBar extends Component {
     let getStockDataURL = APIConstants.STOCK_LOOKUP_URL;
     let stockDataURL = getStockDataURL(query);
 
-    let response = fetch(stockDataURL)
-      .then(response => response.json())
+    retrieveData(stockDataURL)
       .then(responseData => {
-        this.setState({ searchResults: responseData.ResultSet.Result,lastSelection : null });
+        this.setState({
+          searchResults: responseData.ResultSet.Result,
+          lastSelection: null
+        });
       })
       .done();
   }
@@ -34,7 +37,7 @@ class SearchBar extends Component {
     this.setState({ searchInput, searchResults, lastSelection });
   }
 
-  reset(){
+  reset() {
     let searchInput = "";
     let searchResults = [];
     let lastSelection = null;
@@ -54,7 +57,11 @@ class SearchBar extends Component {
           onChangeText={text => this.handleSelectChange(text)}
         />
         <View>
-          <CreateStockEntry mobxStore={this.props.mobxStore} lastSelection={this.state.lastSelection} reset={this.reset}/>
+          <CreateStockEntry
+            mobxStore={this.props.mobxStore}
+            lastSelection={this.state.lastSelection}
+            reset={this.reset}
+          />
         </View>
         <View style={{ height: screenHeight - 250 }}>
           <SearchResults
