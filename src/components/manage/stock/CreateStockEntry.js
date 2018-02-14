@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Text, View, Button, AsyncStorage } from "react-native";
 import PortfolioConstants from "../../../constants/PortfolioConstants";
 import { Input } from "../../common/";
+import { retrieveData } from "../../../utils/PortFolioDataUtil";
+import { APIConstants } from "../../../constants/APIConstants";
+import { configKeys } from "../../../keys/configKeys";
 
 export default class CreateStockEntry extends Component {
   constructor(props) {
@@ -45,8 +48,8 @@ export default class CreateStockEntry extends Component {
         alignItems: "center",
         marginTop: 10
       },
-      validationStyle :{
-        color: '#ff0000',
+      validationStyle: {
+        color: "#ff0000",
         paddingLeft: 10
       }
     };
@@ -143,7 +146,7 @@ export default class CreateStockEntry extends Component {
     let response = await AsyncStorage.getItem("portfolioDetails");
     let portfolioDetails = (await JSON.parse(response)) || {};
     let { stockDetails = [] } = portfolioDetails;
-    const stockObj = {
+    let stockObj = {
       name: name,
       symbol: symbol,
       exchDisp: exchDisp,
@@ -151,7 +154,40 @@ export default class CreateStockEntry extends Component {
       price: price
     };
 
-    this.props.mobxStore.addStock(stockObj);
+    const query = symbol;
+    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+    const { TIME_SERIES_KEY } = configKeys;
+    const timeSeriesDataURL = getTimeSeriesDataURL(query, TIME_SERIES_KEY);
+    let closingPriceObj,
+      closingPrice = "";
+
+    retrieveData(timeSeriesDataURL)
+      .then(responseData => {
+        const map = new Map(Object.entries(responseData));
+        //console.log(`Response from server is ${responseData}`);
+        map.forEach((valueObj, key) => {
+          if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
+            closingPriceObj = Object.values(valueObj)[
+              Object.values(valueObj).length - 1
+            ];
+            closingPrice = parseFloat(
+              closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
+            ).toFixed(2);
+            console.log(`Closing price is ${closingPrice}`);
+          }
+        });
+
+        stockObj = { ...stockObj, closingPrice };
+        this.setState({
+          ...this.state,
+          quantity: "",
+          price: "",
+          validationComments: ""
+        });
+        this.props.mobxStore.addStock(stockObj);
+      })
+      .done();
+
     await AsyncStorage.setItem(
       "stockDetails",
       JSON.stringify(this.props.mobxStore.stocks)

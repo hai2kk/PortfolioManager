@@ -1,81 +1,28 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableHighlight } from "react-native";
-import { APIConstants } from "../../constants/APIConstants";
 import { PortfolioContentStyles } from "../../styles/PortfolioContentStyles";
-import { retrieveData } from "../../utils/PortFolioDataUtil";
 import PortfolioConstants from "../../constants/PortfolioConstants";
-import { configKeys } from "../../keys/configKeys";
 
 export default class PortfolioContent extends Component {
   constructor(props) {
     super(props);
-    const closingPrice = "";
-    let indicator = "";
     const {
       PORT_FOLIO_NO_CHANGE_COLOR,
       PORT_FOLIO_UP_COLOR,
       PORT_FOLIO_DOWN_COLOR
     } = PortfolioConstants;
-    this.state = {
-      closingPrice,
-      indicator: PORT_FOLIO_NO_CHANGE_COLOR
-    };
-  }
-
-  componentDidMount() {
-    console.log("inside componentDidMount");
-    const query = this.props.stockDetail.symbol;
-    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
-    const { TIME_SERIES_KEY } = configKeys;
-    const timeSeriesDataURL = getTimeSeriesDataURL(query, TIME_SERIES_KEY);
-    let closingPriceObj,
-      closingPrice = "";
-    const currentPrice = parseFloat(this.props.stockDetail.price);
-
-    retrieveData(timeSeriesDataURL)
-      .then(responseData => {
-        const map = new Map(Object.entries(responseData));
-        map.forEach((valueObj, key) => {
-          if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
-            closingPriceObj = Object.values(valueObj)[
-              Object.values(valueObj).length - 1
-            ];
-            closingPrice =
-              closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY];
-            closingPrice = parseFloat(closingPrice).toFixed(2);
-          }
-        });
-
-        this.setState({
-          ...this.state,
-          closingPrice,
-          indicator: getIndicator(closingPrice, currentPrice)
-        });
-      })
-      .done();
-
-    const getIndicator = (closingPrice, currentPrice) => {
-      const {
-        PORT_FOLIO_NO_CHANGE_COLOR,
-        PORT_FOLIO_UP_COLOR,
-        PORT_FOLIO_DOWN_COLOR
-      } = PortfolioConstants;
-      let indicator = PORT_FOLIO_NO_CHANGE_COLOR;
-      if (closingPrice > currentPrice) {
-        indicator = PORT_FOLIO_UP_COLOR;
-      }
-
-      if (closingPrice < currentPrice) {
-        indicator = PORT_FOLIO_DOWN_COLOR;
-      }
-      return indicator;
-    };
   }
 
   render() {
-    console.log("inside render");
     const { index, stockDetail, onDelete } = this.props;
-    const { name, symbol, quantity, price, exchDisp } = stockDetail;
+    const {
+      name,
+      symbol,
+      quantity,
+      price,
+      exchDisp,
+      closingPrice
+    } = stockDetail;
     const {
       titleStyle,
       overviewStyle,
@@ -87,6 +34,8 @@ export default class PortfolioContent extends Component {
       indicatorViewStyle,
       indicatorContentStyle
     } = PortfolioContentStyles;
+
+    const indicatorColor = getIndicator(closingPrice, price);
 
     return (
       <View style={containerStyle}>
@@ -109,10 +58,10 @@ export default class PortfolioContent extends Component {
             <Text
               style={[
                 indicatorContentStyle,
-                { backgroundColor: this.state.indicator }
+                { backgroundColor: indicatorColor }
               ]}
             >
-              {this.state.closingPrice}
+              {closingPrice}
             </Text>
           </View>
         </View>
@@ -126,5 +75,22 @@ export default class PortfolioContent extends Component {
         </View>
       </View>
     );
+
+    function getIndicator(closingPrice, currentPrice) {
+      const {
+        PORT_FOLIO_NO_CHANGE_COLOR,
+        PORT_FOLIO_UP_COLOR,
+        PORT_FOLIO_DOWN_COLOR
+      } = PortfolioConstants;
+      let indicator = PORT_FOLIO_NO_CHANGE_COLOR;
+      if (closingPrice > currentPrice) {
+        indicator = PORT_FOLIO_UP_COLOR;
+      }
+
+      if (closingPrice < currentPrice) {
+        indicator = PORT_FOLIO_DOWN_COLOR;
+      }
+      return indicator;
+    }
   }
 }
