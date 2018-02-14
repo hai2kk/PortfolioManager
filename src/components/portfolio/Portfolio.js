@@ -38,6 +38,7 @@ class Portfolio extends Component {
     let mobxStore = this.props.screenProps.store;
     mobxStore.deleteStock(index);
     AsyncStorage.setItem("stockDetails", JSON.stringify(mobxStore.stocks));
+    this.setState({...this.state});
   }
 
   componentDidMount() {

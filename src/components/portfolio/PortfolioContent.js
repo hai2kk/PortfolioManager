@@ -3,24 +3,31 @@ import { View, Text, Image, TouchableHighlight } from "react-native";
 import { APIConstants } from "../../constants/APIConstants";
 import { PortfolioContentStyles } from "../../styles/PortfolioContentStyles";
 import { retrieveData } from "../../utils/PortFolioDataUtil";
-import PortfolioConstants from "../../constants/PortfolioConstants"
+import PortfolioConstants from "../../constants/PortfolioConstants";
+import { configKeys } from "../../keys/configKeys";
 
 export default class PortfolioContent extends Component {
   constructor(props) {
     super(props);
     const closingPrice = "";
     let indicator = "";
-    const {PORT_FOLIO_NO_CHANGE_COLOR,PORT_FOLIO_UP_COLOR,PORT_FOLIO_DOWN_COLOR} = PortfolioConstants;
+    const {
+      PORT_FOLIO_NO_CHANGE_COLOR,
+      PORT_FOLIO_UP_COLOR,
+      PORT_FOLIO_DOWN_COLOR
+    } = PortfolioConstants;
     this.state = {
       closingPrice,
-      indicator : PORT_FOLIO_NO_CHANGE_COLOR
+      indicator: PORT_FOLIO_NO_CHANGE_COLOR
     };
   }
 
   componentDidMount() {
+    console.log("inside componentDidMount");
     const query = this.props.stockDetail.symbol;
     const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
-    const timeSeriesDataURL = getTimeSeriesDataURL(query);
+    const { TIME_SERIES_KEY } = configKeys;
+    const timeSeriesDataURL = getTimeSeriesDataURL(query, TIME_SERIES_KEY);
     let closingPriceObj,
       closingPrice = "";
     const currentPrice = parseFloat(this.props.stockDetail.price);
@@ -48,7 +55,11 @@ export default class PortfolioContent extends Component {
       .done();
 
     const getIndicator = (closingPrice, currentPrice) => {
-      const {PORT_FOLIO_NO_CHANGE_COLOR,PORT_FOLIO_UP_COLOR,PORT_FOLIO_DOWN_COLOR} = PortfolioConstants;
+      const {
+        PORT_FOLIO_NO_CHANGE_COLOR,
+        PORT_FOLIO_UP_COLOR,
+        PORT_FOLIO_DOWN_COLOR
+      } = PortfolioConstants;
       let indicator = PORT_FOLIO_NO_CHANGE_COLOR;
       if (closingPrice > currentPrice) {
         indicator = PORT_FOLIO_UP_COLOR;
@@ -62,6 +73,7 @@ export default class PortfolioContent extends Component {
   }
 
   render() {
+    console.log("inside render");
     const { index, stockDetail, onDelete } = this.props;
     const { name, symbol, quantity, price, exchDisp } = stockDetail;
     const {
@@ -75,7 +87,7 @@ export default class PortfolioContent extends Component {
       indicatorViewStyle,
       indicatorContentStyle
     } = PortfolioContentStyles;
-    
+
     return (
       <View style={containerStyle}>
         <View style={contentsText}>
@@ -94,13 +106,18 @@ export default class PortfolioContent extends Component {
             <Text numberOfLines={1} style={overviewStyle}>
               {exchDisp}
             </Text>
-            <Text style={[indicatorContentStyle,{backgroundColor : this.state.indicator}]}>
+            <Text
+              style={[
+                indicatorContentStyle,
+                { backgroundColor: this.state.indicator }
+              ]}
+            >
               {this.state.closingPrice}
             </Text>
           </View>
         </View>
         <View style={contentsImage}>
-          <TouchableHighlight onPress={() => onDelete(index)}>
+          <TouchableHighlight onPress={() => this.props.onDelete(index)}>
             <Image
               style={imageStyle}
               source={require("../../assets/delete.png")}

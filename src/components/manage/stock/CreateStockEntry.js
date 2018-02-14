@@ -44,6 +44,10 @@ export default class CreateStockEntry extends Component {
         height: 50,
         alignItems: "center",
         marginTop: 10
+      },
+      validationStyle :{
+        color: '#ff0000',
+        paddingLeft: 10
       }
     };
     const {
@@ -51,7 +55,8 @@ export default class CreateStockEntry extends Component {
       titleStyle,
       detailsViewStyle,
       inputViewStyle,
-      buttonViewStyle
+      buttonViewStyle,
+      validationStyle
     } = styles;
 
     if (this.props.lastSelection === null) {
@@ -97,6 +102,7 @@ export default class CreateStockEntry extends Component {
             onChangeText={price => this.setState({ price })}
           />
         </View>
+        <Text style={validationStyle}>{this.state.validationComments}</Text>
         <View style={buttonViewStyle}>
           <Button
             onPress={this.onSave}
@@ -110,8 +116,29 @@ export default class CreateStockEntry extends Component {
   }
 
   async onSave() {
-    const { name, symbol, exchDisp } = this.props.lastSelection;
     const { quantity, price } = this.state;
+    let isQuantityInvalid = true;
+    let isPriceInvalid = true;
+    let validationContentArr = [];
+
+    if (isNaN(parseInt(quantity))) {
+      isQuantityInvalid = false;
+      validationContentArr.push("Quantity");
+    }
+
+    if (isNaN(parseFloat(price))) {
+      isPriceInvalid = false;
+      validationContentArr.push("Price");
+    }
+
+    if (!isQuantityInvalid || !isPriceInvalid) {
+      this.setState({
+        ...this.state,
+        validationComments: `${validationContentArr} mandatory `
+      });
+      return;
+    }
+    const { name, symbol, exchDisp } = this.props.lastSelection;
 
     let response = await AsyncStorage.getItem("portfolioDetails");
     let portfolioDetails = (await JSON.parse(response)) || {};
@@ -123,7 +150,7 @@ export default class CreateStockEntry extends Component {
       quantity: quantity,
       price: price
     };
-    
+
     this.props.mobxStore.addStock(stockObj);
     await AsyncStorage.setItem(
       "stockDetails",
