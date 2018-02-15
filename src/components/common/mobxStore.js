@@ -14,6 +14,11 @@ class mobxStore {
     this.stocks.splice(index, 1);
   }
 
+  removeAll(){
+    this.stocks.length = 0;
+    this.crypto.length = 0;
+  }
+
   addCrypto(item) {
     this.crypto.push(item);
   }

@@ -164,16 +164,12 @@ export default class CreateStockEntry extends Component {
     retrieveData(timeSeriesDataURL)
       .then(responseData => {
         const map = new Map(Object.entries(responseData));
-        //console.log(`Response from server is ${responseData}`);
         map.forEach((valueObj, key) => {
           if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
-            closingPriceObj = Object.values(valueObj)[
-              Object.values(valueObj).length - 1
-            ];
+            closingPriceObj = Object.values(valueObj)[0];
             closingPrice = parseFloat(
               closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
             ).toFixed(2);
-            console.log(`Closing price is ${closingPrice}`);
           }
         });
 
@@ -185,13 +181,12 @@ export default class CreateStockEntry extends Component {
           validationComments: ""
         });
         this.props.mobxStore.addStock(stockObj);
+        AsyncStorage.setItem(
+          "stockDetails",
+          JSON.stringify(this.props.mobxStore.stocks)
+        );
+        this.props.reset();
       })
       .done();
-
-    await AsyncStorage.setItem(
-      "stockDetails",
-      JSON.stringify(this.props.mobxStore.stocks)
-    );
-    this.props.reset();
   }
 }

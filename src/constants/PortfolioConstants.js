@@ -10,7 +10,7 @@ const PortfolioConstants = {
     SEARCH_RESULT_PURCHASE_PRICE : "Purchase Price",
     SEARCH_RESULT_PURCHASE_QUANTITY : "Quantity",
     PORT_FOLIO_UP_COLOR : "#47d147",
-    PORT_FOLIO_DOWN_COLOR : "#ff704d",
+    PORT_FOLIO_DOWN_COLOR : "#F3360E",
     PORT_FOLIO_NO_CHANGE_COLOR : "#ffa64d"
 }
 

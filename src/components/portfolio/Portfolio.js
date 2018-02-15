@@ -6,7 +6,8 @@ import {
   Image,
   TouchableHighlight,
   ScrollView,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 } from "react-native";
 import NavigationStyles from "../../styles/NavigationStyles";
 import { NavigationActions } from "react-navigation";
@@ -32,24 +33,33 @@ class Portfolio extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true
+      isLoading: true,
+      refreshing: false
     };
     this.onDelete = this.onDelete.bind(this);
+    this.loadPortFolioDetails = this.loadPortFolioDetails.bind(this);
+  }
+
+  _onRefresh() {
+    this.setState({ ...this.state, refreshing: true });
+    let mobxStore = this.props.screenProps.store;
+    mobxStore.removeAll();
+    this.loadPortFolioDetails();
+    this.setState({ ...this.state, refreshing: false });
   }
 
   onDelete(index) {
     let mobxStore = this.props.screenProps.store;
     mobxStore.deleteStock(index);
     AsyncStorage.setItem("stockDetails", JSON.stringify(mobxStore.stocks));
-    this.setState({...this.state});
+    this.setState({ ...this.state });
   }
 
-  componentDidMount() {
-    //AsyncStorage.clear();
+  async loadPortFolioDetails() {
     let mobxStore = this.props.screenProps.store;
     AsyncStorage.getItem("stockDetails").then(response => {
-      //this.setState({ ...this.state, isLoading: false });
-      this.setState({isLoading:false});
+      this.setState({ ...this.state, isLoading: false });
+      //this.setState({ isLoading: false });
       let stockDetails = JSON.parse(response);
       if (stockDetails) {
         stockDetails.forEach(element => {
@@ -68,9 +78,7 @@ class Portfolio extends Component {
               const map = new Map(Object.entries(responseData));
               map.forEach((valueObj, key) => {
                 if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
-                  closingPriceObj = Object.values(valueObj)[
-                    Object.values(valueObj).length - 1
-                  ];
+                  closingPriceObj = Object.values(valueObj)[0];
                   closingPrice = parseFloat(
                     closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
                   ).toFixed(2);
@@ -81,7 +89,6 @@ class Portfolio extends Component {
             })
             .done();
         });
-        this.props.screenProps.store = mobxStore;
         this.setState({ ...this.state, store: mobxStore });
       }
     });
@@ -94,7 +101,10 @@ class Portfolio extends Component {
         });
       }
     });
-    mobxStore.print();
+  }
+
+  componentDidMount() {
+    this.loadPortFolioDetails();
   }
 
   renderPortfolioDetails() {
@@ -135,7 +145,16 @@ class Portfolio extends Component {
     } else {
       return (
         <View>
-          <ScrollView>{this.renderPortfolioDetails()}</ScrollView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this._onRefresh.bind(this)}
+              />
+            }
+          >
+            {this.renderPortfolioDetails()}
+          </ScrollView>
         </View>
       );
     }

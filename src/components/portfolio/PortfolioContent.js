@@ -6,11 +6,6 @@ import PortfolioConstants from "../../constants/PortfolioConstants";
 export default class PortfolioContent extends Component {
   constructor(props) {
     super(props);
-    const {
-      PORT_FOLIO_NO_CHANGE_COLOR,
-      PORT_FOLIO_UP_COLOR,
-      PORT_FOLIO_DOWN_COLOR
-    } = PortfolioConstants;
   }
 
   render() {
@@ -32,10 +27,30 @@ export default class PortfolioContent extends Component {
       contentsImage,
       firstRowStyle,
       indicatorViewStyle,
-      indicatorContentStyle
+      indicatorContentStyle,
+      totalValueStyle,
+      nameStyle
     } = PortfolioContentStyles;
+    const {
+      PORT_FOLIO_NO_CHANGE_COLOR,
+      PORT_FOLIO_UP_COLOR,
+      PORT_FOLIO_DOWN_COLOR
+    } = PortfolioConstants;
 
-    const indicatorColor = getIndicator(closingPrice, price);
+    const originalTotalValue = parseFloat(price * quantity);
+    const currentTotalValue = parseFloat(closingPrice * quantity);
+    const PLpercent = (
+      (currentTotalValue - originalTotalValue) /
+      originalTotalValue *
+      100
+    ).toFixed(2);
+    if (PLpercent > 0) {
+      indicatorColor = PORT_FOLIO_UP_COLOR;
+    } else if (PLpercent < 0) {
+      indicatorColor = PORT_FOLIO_DOWN_COLOR;
+    } else {
+      indicatorColor = PORT_FOLIO_NO_CHANGE_COLOR;
+    }
 
     return (
       <View style={containerStyle}>
@@ -45,10 +60,10 @@ export default class PortfolioContent extends Component {
               {symbol}
             </Text>
             <Text numberOfLines={1} style={overviewStyle}>
-              {quantity} at {price}
+              {quantity} at USD {price}
             </Text>
           </View>
-          <Text numberOfLines={1} style={overviewStyle}>
+          <Text numberOfLines={1} style={nameStyle}>
             {name}
           </Text>
           <View style={indicatorViewStyle}>
@@ -61,9 +76,15 @@ export default class PortfolioContent extends Component {
                 { backgroundColor: indicatorColor }
               ]}
             >
-              {closingPrice}
+              {PLpercent}%
             </Text>
           </View>
+          <Text style={totalValueStyle}>
+            Purchased Value : ${originalTotalValue}
+          </Text>
+          <Text style={[totalValueStyle, { color: indicatorColor }]}>
+            Current Value : ${currentTotalValue}
+          </Text>
         </View>
         <View style={contentsImage}>
           <TouchableHighlight onPress={() => this.props.onDelete(index)}>
@@ -75,22 +96,5 @@ export default class PortfolioContent extends Component {
         </View>
       </View>
     );
-
-    function getIndicator(closingPrice, currentPrice) {
-      const {
-        PORT_FOLIO_NO_CHANGE_COLOR,
-        PORT_FOLIO_UP_COLOR,
-        PORT_FOLIO_DOWN_COLOR
-      } = PortfolioConstants;
-      let indicator = PORT_FOLIO_NO_CHANGE_COLOR;
-      if (closingPrice > currentPrice) {
-        indicator = PORT_FOLIO_UP_COLOR;
-      }
-
-      if (closingPrice < currentPrice) {
-        indicator = PORT_FOLIO_DOWN_COLOR;
-      }
-      return indicator;
-    }
   }
 }

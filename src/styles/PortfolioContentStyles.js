@@ -3,7 +3,7 @@ import Constants from "../constants/PortfolioConstants";
 const PortfolioContentStyles = {
   containerStyle: {
     flexDirection: "row",
-    height: 100,
+    height: 180,
     paddingTop: 10,
     borderColor: "#d6d7da",
     borderWidth: 0.5,
@@ -14,6 +14,15 @@ const PortfolioContentStyles = {
     flex: 3,
     flexDirection: "column"
   },
+  totalValueStyle: {
+    fontSize: 18,
+    color: "#000814",
+    paddingLeft: 10,
+    paddingTop: 5,
+    width: 400,
+    flexWrap: "nowrap",
+    justifyContent: "space-around"
+  },
   contentsImage: {
     flex: 1,
     flexDirection: "row",
@@ -23,9 +32,19 @@ const PortfolioContentStyles = {
     fontSize: 20,
     color: "#010a16",
     paddingLeft: 10,
+    paddingBottom : 5,
     color: Constants.FORE_COLOR_CODE,
     justifyContent: "space-around",
     flex: 2
+  },
+  nameStyle: {
+    fontSize: 18,
+    color: "#000814",
+    paddingLeft: 10,
+    paddingBottom : 5,
+    width: 250,
+    flexWrap: "nowrap",
+    justifyContent: "space-around"
   },
   overviewStyle: {
     fontSize: 16,
