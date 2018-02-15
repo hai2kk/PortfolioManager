@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Text, View, Button, AsyncStorage } from "react-native";
 import PortfolioConstants from "../../../constants/PortfolioConstants";
 import { Input } from "../../common/";
+import { retrieveData } from "../../../utils/PortFolioDataUtil";
+import { APIConstants } from "../../../constants/APIConstants";
+import { configKeys } from "../../../keys/configKeys";
 
 export default class CreateStockEntry extends Component {
   constructor(props) {
@@ -44,6 +47,10 @@ export default class CreateStockEntry extends Component {
         height: 50,
         alignItems: "center",
         marginTop: 10
+      },
+      validationStyle: {
+        color: "#ff0000",
+        paddingLeft: 10
       }
     };
     const {
@@ -51,7 +58,8 @@ export default class CreateStockEntry extends Component {
       titleStyle,
       detailsViewStyle,
       inputViewStyle,
-      buttonViewStyle
+      buttonViewStyle,
+      validationStyle
     } = styles;
 
     if (this.props.lastSelection === null) {
@@ -97,6 +105,7 @@ export default class CreateStockEntry extends Component {
             onChangeText={price => this.setState({ price })}
           />
         </View>
+        <Text style={validationStyle}>{this.state.validationComments}</Text>
         <View style={buttonViewStyle}>
           <Button
             onPress={this.onSave}
@@ -110,25 +119,74 @@ export default class CreateStockEntry extends Component {
   }
 
   async onSave() {
-    const { name, symbol, exchDisp } = this.props.lastSelection;
     const { quantity, price } = this.state;
+    let isQuantityInvalid = true;
+    let isPriceInvalid = true;
+    let validationContentArr = [];
+
+    if (isNaN(parseInt(quantity))) {
+      isQuantityInvalid = false;
+      validationContentArr.push("Quantity");
+    }
+
+    if (isNaN(parseFloat(price))) {
+      isPriceInvalid = false;
+      validationContentArr.push("Price");
+    }
+
+    if (!isQuantityInvalid || !isPriceInvalid) {
+      this.setState({
+        ...this.state,
+        validationComments: `${validationContentArr} mandatory `
+      });
+      return;
+    }
+    const { name, symbol, exchDisp } = this.props.lastSelection;
 
     let response = await AsyncStorage.getItem("portfolioDetails");
     let portfolioDetails = (await JSON.parse(response)) || {};
     let { stockDetails = [] } = portfolioDetails;
-    const stockObj = {
+    let stockObj = {
       name: name,
       symbol: symbol,
       exchDisp: exchDisp,
       quantity: quantity,
       price: price
     };
-    
-    this.props.mobxStore.addStock(stockObj);
-    await AsyncStorage.setItem(
-      "stockDetails",
-      JSON.stringify(this.props.mobxStore.stocks)
-    );
-    this.props.reset();
+
+    const query = symbol;
+    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+    const { TIME_SERIES_KEY } = configKeys;
+    const timeSeriesDataURL = getTimeSeriesDataURL(query, TIME_SERIES_KEY);
+    let closingPriceObj,
+      closingPrice = "";
+
+    retrieveData(timeSeriesDataURL)
+      .then(responseData => {
+        const map = new Map(Object.entries(responseData));
+        map.forEach((valueObj, key) => {
+          if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
+            closingPriceObj = Object.values(valueObj)[0];
+            closingPrice = parseFloat(
+              closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
+            ).toFixed(2);
+          }
+        });
+
+        stockObj = { ...stockObj, closingPrice };
+        this.setState({
+          ...this.state,
+          quantity: "",
+          price: "",
+          validationComments: ""
+        });
+        this.props.mobxStore.addStock(stockObj);
+        AsyncStorage.setItem(
+          "stockDetails",
+          JSON.stringify(this.props.mobxStore.stocks)
+        );
+        this.props.reset();
+      })
+      .done();
   }
 }

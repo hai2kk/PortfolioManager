@@ -25,6 +25,7 @@ const Input = ({ placeHolder, value, onChangeText }) => {
         value={value}
         onChangeText={onChangeText}
         style={textStyle}
+        keyboardType='numeric'
       />
     </View>
   );
