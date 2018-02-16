@@ -37,8 +37,8 @@ export default class PortfolioContent extends Component {
       PORT_FOLIO_DOWN_COLOR
     } = PortfolioConstants;
 
-    const originalTotalValue = parseFloat(price * quantity);
-    const currentTotalValue = parseFloat(closingPrice * quantity);
+    const originalTotalValue = parseFloat(price * quantity).toFixed(2);
+    const currentTotalValue = parseFloat(closingPrice * quantity).toFixed(2);
     const PLpercent = (
       (currentTotalValue - originalTotalValue) /
       originalTotalValue *
