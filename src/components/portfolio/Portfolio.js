@@ -141,7 +141,7 @@ class Portfolio extends Component {
     if (mobxStore.stocks.length > 0) {
       showStart = false;
     }
-    console.log(`ShowStart is ${showStart} isLoading is ${isLoading}`);
+    
     if (isLoading) {
       return (
         <View>
@@ -190,6 +190,7 @@ class Portfolio extends Component {
       }
     });
   }
+  
   createPortfolioClick() {
     const navigateAction = NavigationActions.navigate({
       routeName: "ManageLookup",

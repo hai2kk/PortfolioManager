@@ -1,8 +1,18 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
-import NavigationStyles from "../../styles/NavigationStyles"
-import PortfolioStyles from "../../styles/PortfolioStyles.js"
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  AsyncStorage,
+  ScrollView
+} from "react-native";
+import { observer } from "mobx-react/native";
+import NavigationStyles from "../../styles/NavigationStyles";
+import PortfolioStyles from "../../styles/PortfolioStyles.js";
+import WatchListItem from "./WatchListItem";
 
+@observer
 class Watchlist extends Component {
   static navigationOptions = {
     tabBarLabel: "Watchlist",
@@ -13,10 +23,47 @@ class Watchlist extends Component {
       />
     )
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      store: this.props.screenProps.store.watchList || []
+    };
+    this.loadWatchlistDetails = this.loadWatchlistDetails.bind(this);
+  }
+
+  componentDidMount() {
+    this.loadWatchlistDetails();
+  }
+
+  async loadWatchlistDetails() {
+    let mobxStore = this.props.screenProps.store;
+    AsyncStorage.getItem("watchList").then(response => {
+      const watchList = JSON.parse(response) || [];
+      this.setState({
+        ...this.state,
+        watchList
+      });
+      mobxStore.watchList = watchList;
+    });
+  }
+
+  renderWatchlistDetails() {
+    const { watchList = [] } = this.props.screenProps.store;
+    return watchList.map((symbol, index) => (
+      <WatchListItem key={index} symbol={symbol} />
+    ));
+  }
+
   render() {
+    const mobxStore = this.props.screenProps.store;
+    console.log(mobxStore);
+    if (mobxStore.watchList.length > 0) {
+      showStart = false;
+    }
     return (
-      <View style={PortfolioStyles.container}>
-        <Text> Watchlist page</Text>
+      <View>
+        <ScrollView>{this.renderWatchlistDetails()}</ScrollView>
       </View>
     );
   }

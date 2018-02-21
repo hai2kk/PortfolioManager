@@ -18,7 +18,8 @@ export default class CreateStockEntry extends Component {
       price: ""
     };
 
-    this.onSave = this.onSave.bind(this);
+    this.onSavePortfolio = this.onSavePortfolio.bind(this);
+    this.onSaveWatchlist = this.onSaveWatchlist.bind(this);
   }
 
   render() {
@@ -46,11 +47,16 @@ export default class CreateStockEntry extends Component {
       buttonViewStyle: {
         height: 50,
         alignItems: "center",
-        marginTop: 10
+        marginTop: 10,
+        flexDirection: "row",
+        justifyContent: "space-around"
       },
       validationStyle: {
         color: "#ff0000",
         paddingLeft: 10
+      },
+      buttonStyle: {
+        justifyContent: "space-around"
       }
     };
     const {
@@ -59,6 +65,7 @@ export default class CreateStockEntry extends Component {
       detailsViewStyle,
       inputViewStyle,
       buttonViewStyle,
+      buttonStyle,
       validationStyle
     } = styles;
 
@@ -108,17 +115,33 @@ export default class CreateStockEntry extends Component {
         <Text style={validationStyle}>{this.state.validationComments}</Text>
         <View style={buttonViewStyle}>
           <Button
-            onPress={this.onSave}
-            title="Save"
+            onPress={this.onSavePortfolio}
+            title="Add to portfolio"
             color={PortfolioConstants.FORE_COLOR_CODE}
             accessibilityLabel="Add to porfolio"
+          />
+          <Button
+            onPress={this.onSaveWatchlist}
+            title="Add to watchlist"
+            color={PortfolioConstants.FORE_COLOR_CODE}
+            accessibilityLabel="Add to watchlist"
           />
         </View>
       </View>
     );
   }
 
-  async onSave() {
+  onSaveWatchlist() {
+    const { symbol } = this.props.lastSelection;
+    this.props.mobxStore.addWatchList(symbol);
+    //AsyncStorage.removeItem("watchList");
+    AsyncStorage.setItem(
+      "watchList",
+      JSON.stringify(this.props.mobxStore.watchList)
+    );
+  }
+
+  async onSavePortfolio() {
     const { quantity, price } = this.state;
     let isQuantityInvalid = true;
     let isPriceInvalid = true;
