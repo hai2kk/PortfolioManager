@@ -63,7 +63,7 @@ class Portfolio extends Component {
     AsyncStorage.getItem("stockDetails").then(response => {
       //this.setState({ ...this.state, isLoading: false });
       //this.setState({ isLoading: false });
-      let stockDetails = JSON.parse(response);
+      let stockDetails = JSON.parse(response) ||[];
       if (stockDetails.length === 0) {
         this.setState({
           ...this.state,
