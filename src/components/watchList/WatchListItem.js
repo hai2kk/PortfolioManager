@@ -109,7 +109,7 @@ export default class WatchListItem extends Component {
           <Text style={percChangeStyle}>{percentageChange}%</Text>
         </View>
         <View style={deleteItemStyle}>
-          <TouchableHighlight onPress={() => onDelete(symbol)}>
+          <TouchableHighlight onPress={() => onDelete(this.props.delKey,symbol)}>
             <Image
               style={deleteImgStyle}
               source={require("../../assets/delete.png")}

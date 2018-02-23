@@ -136,10 +136,11 @@ export default class CreateStockEntry extends Component {
     const stockObj = { symbol, name };
     this.props.mobxStore.addWatchList(stockObj);
     //AsyncStorage.removeItem("watchList");
-    AsyncStorage.setItem(
+     AsyncStorage.setItem(
       "watchList",
       JSON.stringify(this.props.mobxStore.watchList)
-    );
+    ); 
+    this.props.reset();
   }
 
   async onSavePortfolio() {

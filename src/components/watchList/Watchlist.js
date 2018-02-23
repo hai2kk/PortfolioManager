@@ -12,6 +12,7 @@ import { observer } from "mobx-react/native";
 import NavigationStyles from "../../styles/NavigationStyles";
 import PortfolioStyles from "../../styles/PortfolioStyles.js";
 import WatchListItem from "./WatchListItem";
+import { compareWatchList } from "../../utils/PortFolioDataUtil";
 
 @observer
 class Watchlist extends Component {
@@ -28,7 +29,7 @@ class Watchlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      store: this.props.screenProps.store.watchList || [],
+      watchList: this.props.screenProps.store.watchList || [],
       refreshing: false
     };
     this.loadWatchlistDetails = this.loadWatchlistDetails.bind(this);
@@ -60,36 +61,36 @@ class Watchlist extends Component {
     });
   }
 
-  onDelete(symbol) {
+  onDelete(index,symbol) {
     console.log(`Deleting ${symbol}`);
     const { watchList = [] } = this.props.screenProps.store;
-    const filteredWatchList = watchList.filter(stockObj => {
-      return stockObj.symbol !== symbol;
-    });
-    this.props.screenProps.store.watchList = filteredWatchList;
-    AsyncStorage.setItem("watchList", JSON.stringify(filteredWatchList));
-    this.setState({ ...this.state, store: filteredWatchList });
+    console.log(`Deleting item found at index ${index} : ${JSON.stringify(watchList[index])} `);
+    watchList.splice(index, 1);
+    //this.setState({ ...this.state, watchList: watchList });
+    this.props.screenProps.store.watchList = watchList;
+    AsyncStorage.setItem("watchList", JSON.stringify(watchList));
   }
 
   renderWatchlistDetails() {
     const { watchList = [] } = this.props.screenProps.store;
-    const filteredWatchList = watchList.sort().reduce((arr, current) => {
+    //const { watchList = [] } = this.state;
+    /* const filteredWatchList = watchList.sort().reduce((arr, current) => {
       if (arr.length === 0 || arr[arr.length - 1].symbol !== current.symbol) {
         arr.push(current);
       }
       return arr;
-    }, []);
+    }, []); */
 
-    return filteredWatchList.map((stockObj, index) => (
-      <WatchListItem key={index} stockObj={stockObj} onDelete={this.onDelete} />
+    watchList.sort(compareWatchList);
+
+    return watchList.map((stockObj, index) => (
+      <WatchListItem key={`${stockObj.symbol}_${index}`} delKey={index} stockObj={stockObj} onDelete={this.onDelete} />
     ));
   }
 
   render() {
     const mobxStore = this.props.screenProps.store;
-    if (mobxStore.watchList.length > 0) {
-      showStart = false;
-    }
+
     return (
       <View>
         <ScrollView
