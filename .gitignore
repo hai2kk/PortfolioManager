@@ -7,7 +7,7 @@
 /node_modules
 
 #API Keys
-/src/keys
+#/src/keys
 
 # misc
 .env.local
