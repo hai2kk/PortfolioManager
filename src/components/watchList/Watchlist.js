@@ -30,6 +30,7 @@ class Watchlist extends Component {
     super(props);
     this.state = {
       watchList: this.props.screenProps.store.watchList || [],
+      cryptoWatchList: this.props.screenProps.store.cryptoWatchList || [],
       refreshing: false
     };
     this.loadWatchlistDetails = this.loadWatchlistDetails.bind(this);
@@ -61,10 +62,14 @@ class Watchlist extends Component {
     });
   }
 
-  onDelete(index,symbol) {
+  onDelete(index, symbol) {
     console.log(`Deleting ${symbol}`);
     const { watchList = [] } = this.props.screenProps.store;
-    console.log(`Deleting item found at index ${index} : ${JSON.stringify(watchList[index])} `);
+    console.log(
+      `Deleting item found at index ${index} : ${JSON.stringify(
+        watchList[index]
+      )} `
+    );
     watchList.splice(index, 1);
     //this.setState({ ...this.state, watchList: watchList });
     this.props.screenProps.store.watchList = watchList;
@@ -72,19 +77,22 @@ class Watchlist extends Component {
   }
 
   renderWatchlistDetails() {
-    const { watchList = [] } = this.props.screenProps.store;
-    //const { watchList = [] } = this.state;
-    /* const filteredWatchList = watchList.sort().reduce((arr, current) => {
-      if (arr.length === 0 || arr[arr.length - 1].symbol !== current.symbol) {
-        arr.push(current);
-      }
-      return arr;
-    }, []); */
-
+    const {
+      watchList = [],
+      cryptoWatchList = []
+    } = this.props.screenProps.store;
+    console.log(`Cryptolist is ${JSON.stringify(cryptoWatchList)}`);
+    
+    
     watchList.sort(compareWatchList);
 
     return watchList.map((stockObj, index) => (
-      <WatchListItem key={`${stockObj.symbol}_${index}`} delKey={index} stockObj={stockObj} onDelete={this.onDelete} />
+      <WatchListItem
+        key={`${stockObj.symbol}_${index}`}
+        delKey={index}
+        stockObj={stockObj}
+        onDelete={this.onDelete}
+      />
     ));
   }
 

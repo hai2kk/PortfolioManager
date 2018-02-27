@@ -6,6 +6,7 @@ class mobxStore {
   @observable stocks = [];
   @observable crypto = [];
   @observable watchList = [];
+  @observable cryptoWatchList = [];
 
   addStock(item) {
     this.stocks.push(item);
@@ -27,14 +28,20 @@ class mobxStore {
     this.watchList.push(item);
   }
 
-  deleteWatchList(index) {
-    this.watchList.splice(index, 1);
+  addCryptoWatchList(item){
+    this.cryptoWatchList.push(item);
+    console.log(this.cryptoWatchList);
+  }
+
+  deleteCryptoWatchList(index) {
+    this.cryptoWatchList.splice(index, 1);
   }
 
   clear(item) {
     this.stocks = [];
     this.crypto = [];
     this.watchList = [];
+    this.cryptoWatchList = [];
   }
 
   removeAll(){
@@ -44,6 +51,7 @@ class mobxStore {
 
   removeAllWatchLists(){
     this.watchList.length = 0;
+    this.cryptoWatchList.length = 0;
   }
 
   print() {
