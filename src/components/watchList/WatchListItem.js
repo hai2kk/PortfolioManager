@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, Image, TouchableHighlight } from "react-native";
 import { APIConstants } from "../../constants/APIConstants";
+import PortfolioConstants from "../../constants/PortfolioConstants"
 import { retrieveData } from "../../utils/PortFolioDataUtil";
 import { configKeys } from "../../keys/configKeys";
 import { WatchlistContentStyles } from "../../styles/WatchlistContentStyles";
@@ -23,10 +24,19 @@ export default class WatchListItem extends Component {
   }
 
   loadClosingPriceDetails() {
-    const query = this.state.stockObj.symbol;
-    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+    const { symbol, type } = this.state.stockObj;
     const { TIME_SERIES_KEY } = configKeys;
-    const timeSeriesDataURL = getTimeSeriesDataURL(query, TIME_SERIES_KEY);
+
+    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+    const getCryptoTimeSeriesDataURL =
+      APIConstants.TIME_SERIES_CRYPTO_LOOKUP_URL;
+    let timeSeriesDataURL = "";
+
+    if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_STOCK) {
+      timeSeriesDataURL = getTimeSeriesDataURL(symbol, TIME_SERIES_KEY);
+    } else if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_CRYPTO) {
+      timeSeriesDataURL = getCryptoTimeSeriesDataURL(symbol, TIME_SERIES_KEY);
+    }
 
     let closingPriceObj,
       closingPriceObjPrev,
@@ -40,16 +50,28 @@ export default class WatchListItem extends Component {
         const map = new Map(Object.entries(responseData));
 
         map.forEach((valueObj, key) => {
-          if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
+          if (
+            key === APIConstants.TIME_SERIES_OBJECT_KEY ||
+            key === APIConstants.TIME_SERIES_CRYPTO_OBJECT_KEY
+          ) {
             closingPriceObj = Object.values(valueObj)[0];
             closingPriceObjPrev = Object.values(valueObj)[1];
 
-            closingPrice = parseFloat(
-              closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
-            ).toFixed(2);
-            closingPricePrev = parseFloat(
-              closingPriceObjPrev[APIConstants.TIME_SERIES_CLOSING_KEY]
-            ).toFixed(2);
+            if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_STOCK) {
+              closingPrice = parseFloat(
+                closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
+              ).toFixed(2);
+              closingPricePrev = parseFloat(
+                closingPriceObjPrev[APIConstants.TIME_SERIES_CLOSING_KEY]
+              ).toFixed(2);
+            } else if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_CRYPTO) {
+              closingPrice = parseFloat(
+                closingPriceObj[APIConstants.TIME_SERIES_CRYPTO_PRICE_KEY]
+              ).toFixed(2);
+              closingPricePrev = parseFloat(
+                closingPriceObjPrev[APIConstants.TIME_SERIES_CRYPTO_PRICE_KEY]
+              ).toFixed(2);
+            }
 
             if (closingPrice >= closingPricePrev) {
               upDown = require("../../assets/up.png");
@@ -93,7 +115,7 @@ export default class WatchListItem extends Component {
       duration,
       onDelete
     } = this.state;
-    const { name = "", symbol = "" } = stockObj;
+    const { name = "", symbol = "", type } = stockObj;
 
     return (
       <View style={containerStyle}>
@@ -109,7 +131,9 @@ export default class WatchListItem extends Component {
           <Text style={percChangeStyle}>{percentageChange}%</Text>
         </View>
         <View style={deleteItemStyle}>
-          <TouchableHighlight onPress={() => onDelete(this.props.delKey,symbol)}>
+          <TouchableHighlight
+            onPress={() => onDelete(this.props.delKey, symbol)}
+          >
             <Image
               style={deleteImgStyle}
               source={require("../../assets/delete.png")}

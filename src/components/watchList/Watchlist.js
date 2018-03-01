@@ -60,18 +60,25 @@ class Watchlist extends Component {
       });
       mobxStore.watchList = watchList;
     });
+
+    /* AsyncStorage.getItem("cryptoWatchList").then(response => {
+      const cryptoWatchList = JSON.parse(response) || [];
+      this.setState({
+        ...this.state,
+        cryptoWatchList,
+        refreshing: false
+      });
+      mobxStore.cryptoWatchList = cryptoWatchList;
+    }); */
   }
 
   onDelete(index, symbol) {
-    console.log(`Deleting ${symbol}`);
-    const { watchList = [] } = this.props.screenProps.store;
-    console.log(
-      `Deleting item found at index ${index} : ${JSON.stringify(
-        watchList[index]
-      )} `
-    );
+    console.log(`Deleting ${symbol} at ${index}`);
+    const {
+      watchList = [],
+      cryptoWatchList = []
+    } = this.props.screenProps.store;
     watchList.splice(index, 1);
-    //this.setState({ ...this.state, watchList: watchList });
     this.props.screenProps.store.watchList = watchList;
     AsyncStorage.setItem("watchList", JSON.stringify(watchList));
   }
@@ -81,10 +88,6 @@ class Watchlist extends Component {
       watchList = [],
       cryptoWatchList = []
     } = this.props.screenProps.store;
-    console.log(`Cryptolist is ${JSON.stringify(cryptoWatchList)}`);
-    
-    
-    watchList.sort(compareWatchList);
 
     return watchList.map((stockObj, index) => (
       <WatchListItem

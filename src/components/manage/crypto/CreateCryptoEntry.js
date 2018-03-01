@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Text, View, Button, AsyncStorage } from "react-native";
 import PortfolioConstants from "../../../constants/PortfolioConstants";
 import { Input } from "../../common/";
+import {APIConstants} from "../../../constants/APIConstants";
+import { retrieveData } from "../../../utils/PortFolioDataUtil"
+import { configKeys } from "../../../keys/configKeys"
 
 export default class CreateCryptoEntry extends Component {
   constructor(props) {
@@ -123,17 +126,21 @@ export default class CreateCryptoEntry extends Component {
 
   async onSaveWatchlist() {
     const { symbol, name } = this.props.lastSelection;
-    const stockObj = { symbol, name };
-    this.props.mobxStore.addCryptoWatchList(stockObj);
+    const stockObj = {
+      symbol,
+      name,
+      type: PortfolioConstants.PORT_FOLIO_ITEM_TYPE_CRYPTO
+    };
+    this.props.mobxStore.addWatchList(stockObj);
     AsyncStorage.setItem(
-      "cryptoWatchList",
-      JSON.stringify(this.props.mobxStore.cryptoWatchList)
-    ); 
+      "watchList",
+      JSON.stringify(this.props.mobxStore.watchList)
+    );
     this.props.reset();
   }
 
   async onSavePortfolio() {
-    /* const { quantity, price } = this.state;
+    const { quantity, price } = this.state;
     let isQuantityInvalid = true;
     let isPriceInvalid = true;
     let validationContentArr = [];
@@ -169,7 +176,7 @@ export default class CreateCryptoEntry extends Component {
     };
 
     const query = symbol;
-    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+    const getTimeSeriesDataURL = APIConstants.TIME_SERIES_CRYPTO_LOOKUP_URL;
     const { TIME_SERIES_KEY } = configKeys;
     const timeSeriesDataURL = getTimeSeriesDataURL(query, TIME_SERIES_KEY);
     let closingPriceObj,
@@ -179,15 +186,20 @@ export default class CreateCryptoEntry extends Component {
       .then(responseData => {
         const map = new Map(Object.entries(responseData));
         map.forEach((valueObj, key) => {
-          if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
+          if (key === APIConstants.TIME_SERIES_CRYPTO_OBJECT_KEY) {
             closingPriceObj = Object.values(valueObj)[0];
             closingPrice = parseFloat(
-              closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
+              closingPriceObj[APIConstants.TIME_SERIES_CRYPTO_PRICE_KEY]
             ).toFixed(2);
           }
         });
 
-        stockObj = { ...stockObj, closingPrice };
+        stockObj = {
+          ...stockObj,
+          closingPrice,
+          type: PortfolioConstants.PORT_FOLIO_ITEM_TYPE_CRYPTO
+        };
+
         this.setState({
           ...this.state,
           quantity: "",
@@ -201,6 +213,6 @@ export default class CreateCryptoEntry extends Component {
         );
         this.props.reset();
       })
-      .done(); */
+      .done();
   }
 }

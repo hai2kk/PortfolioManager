@@ -1,5 +1,5 @@
 const PortfolioConstants = {
-  MANAGE_LOOKUP_TITLE: "Add to Portfolio",
+  MANAGE_LOOKUP_TITLE: "Manage Portfolio",
   FORE_COLOR_CODE: "#70194f",
   BACKGROUND_COLOR_CODE: "#D3D3D3",
   STOCK_LOOKUP_HEADER_TITLE: "Stock",
@@ -12,6 +12,8 @@ const PortfolioConstants = {
   PORT_FOLIO_UP_COLOR: "#47d147",
   PORT_FOLIO_DOWN_COLOR: "#F3360E",
   PORT_FOLIO_NO_CHANGE_COLOR: "#ffa64d",
+  PORT_FOLIO_ITEM_TYPE_STOCK : "stock",
+  PORT_FOLIO_ITEM_TYPE_CRYPTO : "crypto",
   CRYPTO_LOOKUP_SET: [
     { code: "1ST", name: "FirstBlood" },
     { code: "2GIVE", name: "GiveCoin" },

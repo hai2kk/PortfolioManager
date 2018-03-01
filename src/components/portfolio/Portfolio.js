@@ -17,6 +17,7 @@ import { observer } from "mobx-react/native";
 import { retrieveData } from "../../utils/PortFolioDataUtil";
 import { APIConstants } from "../../constants/APIConstants";
 import { configKeys } from "../../keys/configKeys";
+import PortfolioConstants from "../../constants/PortfolioConstants";
 
 @observer
 class Portfolio extends Component {
@@ -63,7 +64,7 @@ class Portfolio extends Component {
     AsyncStorage.getItem("stockDetails").then(response => {
       //this.setState({ ...this.state, isLoading: false });
       //this.setState({ isLoading: false });
-      let stockDetails = JSON.parse(response) ||[];
+      let stockDetails = JSON.parse(response) || [];
       if (stockDetails.length === 0) {
         this.setState({
           ...this.state,
@@ -73,13 +74,21 @@ class Portfolio extends Component {
         });
       } else {
         stockDetails.forEach(element => {
-          const query = element.symbol;
+          const { symbol, type } = element;
           const getTimeSeriesDataURL = APIConstants.TIME_SERIES_LOOKUP_URL;
+          const getCryptoTimeSeriesDataURL = APIConstants.TIME_SERIES_CRYPTO_LOOKUP_URL;
           const { TIME_SERIES_KEY } = configKeys;
-          const timeSeriesDataURL = getTimeSeriesDataURL(
-            query,
-            TIME_SERIES_KEY
-          );
+          let timeSeriesDataURL = "";
+
+          if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_STOCK) {
+            timeSeriesDataURL = getTimeSeriesDataURL(symbol, TIME_SERIES_KEY);
+          } else if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_CRYPTO) {
+            timeSeriesDataURL = getCryptoTimeSeriesDataURL(
+              symbol,
+              TIME_SERIES_KEY
+            );
+          }
+
           let closingPriceObj,
             closingPrice = "";
 
@@ -87,11 +96,22 @@ class Portfolio extends Component {
             .then(responseData => {
               const map = new Map(Object.entries(responseData));
               map.forEach((valueObj, key) => {
-                if (key === APIConstants.TIME_SERIES_OBJECT_KEY) {
+                if (
+                  key === APIConstants.TIME_SERIES_OBJECT_KEY ||
+                  key === APIConstants.TIME_SERIES_CRYPTO_OBJECT_KEY
+                ) {
                   closingPriceObj = Object.values(valueObj)[0];
-                  closingPrice = parseFloat(
-                    closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
-                  ).toFixed(2);
+                  if (type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_STOCK) {
+                    closingPrice = parseFloat(
+                      closingPriceObj[APIConstants.TIME_SERIES_CLOSING_KEY]
+                    ).toFixed(2);
+                  } else if (
+                    type === PortfolioConstants.PORT_FOLIO_ITEM_TYPE_CRYPTO
+                  ) {
+                    closingPrice = parseFloat(
+                      closingPriceObj[APIConstants.TIME_SERIES_CRYPTO_PRICE_KEY]
+                    ).toFixed(2);
+                  }
                 }
               });
               let stockDetail = { ...element, closingPrice };
@@ -104,15 +124,6 @@ class Portfolio extends Component {
           store: mobxStore,
           showStart: false,
           isLoading: false
-        });
-      }
-    });
-    AsyncStorage.getItem("cryptoDetails").then(response => {
-      this.state.setState({ isLoading: false });
-      let cryptoDetails = JSON.parse(response);
-      if (cryptoDetails) {
-        cryptoDetails.forEach(element => {
-          mobxStore.addCrypto(element);
         });
       }
     });
@@ -141,7 +152,7 @@ class Portfolio extends Component {
     if (mobxStore.stocks.length > 0) {
       showStart = false;
     }
-    
+
     if (isLoading) {
       return (
         <View>
@@ -190,7 +201,7 @@ class Portfolio extends Component {
       }
     });
   }
-  
+
   createPortfolioClick() {
     const navigateAction = NavigationActions.navigate({
       routeName: "ManageLookup",

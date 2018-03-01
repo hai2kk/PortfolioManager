@@ -131,19 +131,24 @@ export default class CreateStockEntry extends Component {
     );
   }
 
-  onSaveWatchlist() {
+  async onSaveWatchlist() {
     const { symbol, name } = this.props.lastSelection;
-    const stockObj = { symbol, name };
+    const stockObj = {
+      symbol,
+      name,
+      type: PortfolioConstants.PORT_FOLIO_ITEM_TYPE_STOCK
+    };
     this.props.mobxStore.addWatchList(stockObj);
     //AsyncStorage.removeItem("watchList");
-     AsyncStorage.setItem(
+    AsyncStorage.setItem(
       "watchList",
       JSON.stringify(this.props.mobxStore.watchList)
-    ); 
+    );
     this.props.reset();
   }
 
   async onSavePortfolio() {
+    //AsyncStorage.removeItem("stockDetails");
     const { quantity, price } = this.state;
     let isQuantityInvalid = true;
     let isPriceInvalid = true;
@@ -198,7 +203,12 @@ export default class CreateStockEntry extends Component {
           }
         });
 
-        stockObj = { ...stockObj, closingPrice };
+        stockObj = {
+          ...stockObj,
+          closingPrice,
+          type: PortfolioConstants.PORT_FOLIO_ITEM_TYPE_STOCK
+        };
+        
         this.setState({
           ...this.state,
           quantity: "",
