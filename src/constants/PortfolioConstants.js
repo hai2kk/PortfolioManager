@@ -407,7 +407,8 @@ const PortfolioConstants = {
     { code: "ZEN", name: "ZenCash" },
     { code: "ZET", name: "Zetacoin" },
     { code: "ZRX", name: "0x" }
-  ]
+  ],
+  SPLASH_SCREEN_TITLE : "Portfolio Manager"
 };
 
 export default PortfolioConstants;
